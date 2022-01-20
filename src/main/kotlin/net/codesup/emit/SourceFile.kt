@@ -1,9 +1,6 @@
 package net.codesup.util.emit
 
-import net.codesup.util.emit.declaration.Declaration
-import net.codesup.util.emit.declaration.DeclarationOwner
-import net.codesup.util.emit.declaration.NamedDeclaration
-import net.codesup.util.emit.declaration.Package
+import net.codesup.util.emit.declaration.*
 import net.codesup.util.emit.use.AnnotationUse
 import net.codesup.util.emit.use.SymbolUser
 import net.codesup.util.emit.use.Use
@@ -96,4 +93,6 @@ class SourceFile(val packageName: Package, override val name: String) : Generabl
     override fun ref(block: Use<SourceFile>.() -> Unit): Use<SourceFile> {
         TODO("Not yet implemented")
     }
+
+    override val doc: KDocBuilder = KDocBuilder()
 }
