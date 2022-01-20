@@ -1,2 +1,2 @@
-rootProject.name = "kotlin-builders"
+rootProject.name = "kotlin-sourcemodel"
 
