@@ -1,7 +1,5 @@
 package net.codesup.emit
 
-import net.codesup.emit.Generable
-import net.codesup.emit.QualifiedName
 import java.io.BufferedWriter
 import java.nio.file.Files
 import java.nio.file.Path

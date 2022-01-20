@@ -1,13 +1,9 @@
 package net.codesup.emit
 
-import net.codesup.emit.Qualifiable
 import net.codesup.emit.use.ClassTypeUse
 import net.codesup.emit.use.KClassUse
 import net.codesup.emit.use.SymbolUser
 import net.codesup.emit.use.TypeUse
-import net.codesup.emit.Generable
-import net.codesup.emit.OutputContext
-import net.codesup.emit.QualifiedName
 import kotlin.reflect.KClass
 
 /**

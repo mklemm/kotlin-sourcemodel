@@ -1,8 +1,6 @@
 package net.codesup.emit.use
 
 import net.codesup.emit.QualifiedName
-import net.codesup.emit.declaration.Package
-import net.codesup.emit.use.ClassTypeUse
 import kotlin.reflect.KClass
 
 open class KClassUse<T:Any>(val kClass: KClass<T>) : ClassTypeUse(QualifiedName(kClass.qualifiedName ?: "<unnamed>")) {

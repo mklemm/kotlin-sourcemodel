@@ -1,6 +1,5 @@
 package net.codesup.emit
 
-import net.codesup.emit.QualifiedName
 import net.codesup.emit.use.AnnotationUse
 import net.codesup.emit.use.ClassTypeUse
 import net.codesup.emit.use.KClassUse

@@ -3,12 +3,7 @@ package net.codesup.emit.declaration
 import net.codesup.emit.Generable
 import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
-import net.codesup.util.emit.*
-import net.codesup.emit.declaration.Declaration
-import net.codesup.emit.declaration.KDocBuilder
-import net.codesup.emit.declaration.NamedDeclaration
 import net.codesup.emit.use.*
-import net.codesup.util.emit.use.*
 
 /**
  * @author Mirko Klemm 2021-03-18

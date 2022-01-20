@@ -1,10 +1,6 @@
 package net.codesup.emit.declaration
 
 import net.codesup.emit.*
-import net.codesup.emit.declaration.DeclarationOwner
-import net.codesup.util.emit.*
-import net.codesup.emit.declaration.Declaration
-import net.codesup.emit.declaration.KDocBuilder
 import net.codesup.emit.use.AnnotationUse
 import net.codesup.emit.use.Use
 import java.nio.file.Path

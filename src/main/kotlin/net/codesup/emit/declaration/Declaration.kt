@@ -3,7 +3,6 @@ package net.codesup.emit.declaration
 import net.codesup.emit.Annotatable
 import net.codesup.emit.Expression
 import net.codesup.emit.QualifiedName
-import net.codesup.emit.declaration.KDocBuilder
 import net.codesup.emit.use.Use
 
 /**

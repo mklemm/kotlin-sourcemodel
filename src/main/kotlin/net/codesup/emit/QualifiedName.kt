@@ -1,9 +1,5 @@
 package net.codesup.emit
 
-import net.codesup.emit.OutputContext
-import net.codesup.emit.quote
-import net.codesup.emit.Generable
-
 /**
  * @author Mirko Klemm 2021-12-21
  *

@@ -1,9 +1,6 @@
 package net.codesup.emit.use
 
 import net.codesup.emit.*
-import net.codesup.emit.use.ClassTypeUse
-import net.codesup.emit.use.SymbolUser
-import net.codesup.util.emit.*
 
 /**
  * @author Mirko Klemm 2021-12-22

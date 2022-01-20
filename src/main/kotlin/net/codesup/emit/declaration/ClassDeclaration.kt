@@ -1,14 +1,9 @@
 package net.codesup.emit.declaration
 
-import net.codesup.emit.declaration.DeclarationOwner
-import net.codesup.emit.declaration.ObjectDeclaration
-import net.codesup.emit.declaration.PrimaryConstructorDeclaration
-import net.codesup.emit.declaration.TypeParamDeclaration
 import net.codesup.emit.use.AnnotationUse
 import net.codesup.emit.use.ClassTypeUse
 import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
-import net.codesup.util.emit.declaration.*
 import net.codesup.emit.use.SuperclassRef
 import net.codesup.emit.use.Use
 

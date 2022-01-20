@@ -3,8 +3,6 @@ package net.codesup.emit.use
 import net.codesup.emit.Annotatable
 import net.codesup.emit.Expression
 import net.codesup.emit.QualifiedName
-import net.codesup.emit.use.AnnotationUse
-import net.codesup.emit.use.SymbolUser
 
 /**
  * @author Mirko Klemm 2021-03-18
