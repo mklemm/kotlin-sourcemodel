@@ -1,4 +1,4 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
 /**
  * @author Mirko Klemm 2021-12-22

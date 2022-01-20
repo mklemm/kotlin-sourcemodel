@@ -1,9 +1,9 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.Expression
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.declaration.FunctionDeclaration
+import net.codesup.emit.Expression
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.declaration.FunctionDeclaration
 
 /**
  * @author Mirko Klemm 2021-03-18

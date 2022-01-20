@@ -1,11 +1,12 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.*
-import net.codesup.util.emit.declaration.ClassDeclaration
-import net.codesup.util.emit.declaration.TypeParamProjection
+import net.codesup.emit.*
+import net.codesup.emit.declaration.ClassDeclaration
+import net.codesup.emit.declaration.TypeParamProjection
 import kotlin.reflect.KClass
 
-open class ClassTypeUse(override val qualifiedName: QualifiedName) : TypeUse(), Qualifiable, Use<ClassDeclaration>, ExpressionContext {
+open class ClassTypeUse(override val qualifiedName: QualifiedName) : TypeUse(), Qualifiable, Use<ClassDeclaration>,
+    ExpressionContext {
     constructor(vararg qName: String) : this(QualifiedName(*qName))
 
     override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {

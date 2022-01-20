@@ -1,7 +1,9 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.*
-import net.codesup.util.emit.declaration.ParameterDeclaration
+import net.codesup.emit.Expression
+import net.codesup.emit.ExpressionContext
+import net.codesup.emit.OutputContext
+import net.codesup.emit.declaration.ParameterDeclaration
 
 class ParameterUse(val declaration: ParameterDeclaration): Use<ParameterDeclaration>, ExpressionContext {
     override fun generate(output: OutputContext) {

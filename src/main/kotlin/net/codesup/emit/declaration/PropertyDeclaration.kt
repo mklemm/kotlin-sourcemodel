@@ -1,9 +1,9 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.*
-import net.codesup.util.emit.use.*
-import net.codesup.util.emit.use.TypeUse
-import kotlin.math.exp
+import net.codesup.emit.Assign
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.use.*
 
 /**
  * @author Mirko Klemm 2021-03-18
@@ -93,7 +93,7 @@ class PropertyDeclaration(override val name: String) : PrimaryConstructorParamet
         this.init = expression
     }
 
-    fun modifier(vararg mod:PropertyModifier) = modifiers.addAll(mod.toList())
+    fun modifier(vararg mod: PropertyModifier) = modifiers.addAll(mod.toList())
     fun isLateInit() = modifier(PropertyModifier.LATEINIT)
 
 }

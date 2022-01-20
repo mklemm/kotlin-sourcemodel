@@ -1,8 +1,10 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.*
-import net.codesup.util.emit.use.*
-import net.codesup.util.emit.use.TypeUse
+import net.codesup.emit.Assign
+import net.codesup.emit.Expression
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.use.*
 
 /**
  * @author Mirko Klemm 2021-03-18
@@ -65,6 +67,6 @@ class ParameterDeclaration(override val name:String): PrimaryConstructorParamete
         this.init = expression
     }
 
-    fun modifier(vararg mod:ParameterModifier) = modifiers.addAll(mod.toList())
+    fun modifier(vararg mod: ParameterModifier) = modifiers.addAll(mod.toList())
 }
 

@@ -1,7 +1,10 @@
 package net.codesup.util.emit
 
-import net.codesup.util.emit.use.ClassTypeUse
-import net.codesup.util.emit.use.KClassUse
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.sourceBuilder
+import net.codesup.emit.use.ClassTypeUse
+import net.codesup.emit.use.KClassUse
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 

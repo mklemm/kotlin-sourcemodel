@@ -1,7 +1,7 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.declaration.TypeParamProjection
+import net.codesup.emit.OutputContext
+import net.codesup.emit.declaration.TypeParamProjection
 
 class TypeParameterUse(val name: String, val projection: TypeParamProjection? = null) : TypeUse() {
     companion object {

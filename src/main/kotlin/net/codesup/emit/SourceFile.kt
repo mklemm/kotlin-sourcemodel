@@ -1,9 +1,13 @@
-package net.codesup.util.emit
+package net.codesup.emit
 
+import net.codesup.emit.Generable
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.declaration.*
 import net.codesup.util.emit.declaration.*
-import net.codesup.util.emit.use.AnnotationUse
-import net.codesup.util.emit.use.SymbolUser
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.use.AnnotationUse
+import net.codesup.emit.use.SymbolUser
+import net.codesup.emit.use.Use
 
 /**
  * @author Mirko Klemm 2021-03-18

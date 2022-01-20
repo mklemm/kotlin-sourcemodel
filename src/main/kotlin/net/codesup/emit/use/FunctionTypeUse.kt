@@ -1,8 +1,8 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.declaration.TypeParamProjection
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.declaration.TypeParamProjection
 import kotlin.reflect.KClass
 
 class FunctionTypeUse : TypeUse() {

@@ -1,7 +1,7 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.OutputContext
+import net.codesup.emit.use.Use
 
 class SetterDeclaration(val parameterName:String = "value"): CallableDeclaration<SetterDeclaration>() {
     override val doc: KDocBuilder = KDocBuilder()

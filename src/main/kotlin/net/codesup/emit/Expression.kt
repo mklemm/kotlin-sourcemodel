@@ -1,9 +1,13 @@
-package net.codesup.util.emit
+package net.codesup.emit
 
-import net.codesup.util.emit.use.ClassTypeUse
-import net.codesup.util.emit.use.KClassUse
-import net.codesup.util.emit.use.SymbolUser
-import net.codesup.util.emit.use.TypeUse
+import net.codesup.emit.Qualifiable
+import net.codesup.emit.use.ClassTypeUse
+import net.codesup.emit.use.KClassUse
+import net.codesup.emit.use.SymbolUser
+import net.codesup.emit.use.TypeUse
+import net.codesup.emit.Generable
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
 import kotlin.reflect.KClass
 
 /**
@@ -20,12 +24,12 @@ interface ExpressionContext {
     fun str(str: String) = Str(this, str).also { top = it }
     fun lit(any: Any) = Lit(this, any).also { top = it }
     fun _null() = lit("null")
-    fun <T:Any> _ref(kClass:KClass<T>, block:KClassUse<T>.() -> Unit = {}) = KClassUse<T>(kClass).apply(block).also { top = it }
-    fun _ref(qName:String, block:ClassTypeUse.() -> Unit = {}) = ClassTypeUse(qName).apply(block).also { top = it }
-    fun _ref(qName:QualifiedName, block:ClassTypeUse.() -> Unit = {}) = ClassTypeUse(qName).apply(block).also { top = it }
+    fun <T:Any> _ref(kClass:KClass<T>, block: KClassUse<T>.() -> Unit = {}) = KClassUse<T>(kClass).apply(block).also { top = it }
+    fun _ref(qName:String, block: ClassTypeUse.() -> Unit = {}) = ClassTypeUse(qName).apply(block).also { top = it }
+    fun _ref(qName: QualifiedName, block: ClassTypeUse.() -> Unit = {}) = ClassTypeUse(qName).apply(block).also { top = it }
     fun array(vararg e: Expression) = ListExpr(this, ", ", "[", "]", *e).also { top = it }
     fun array(block: ListExpr.() -> Unit) = ListExpr(this, ", ", "[", "]").apply(block).also { top = it }
-    fun cast(t:TypeUse, e:Expression) = Cast(this, t, e)
+    fun cast(t: TypeUse, e: Expression) = Cast(this, t, e)
 }
 
 interface Expression : Generable, SymbolUser {
@@ -62,7 +66,7 @@ interface ContainedExpression : Expression {
     operator fun Number.times(e: Expression) = litOp("*", this, e)
     operator fun Number.div(e: Expression) = litOp("/", this, e)
 
-    fun cast(t:TypeUse) = Cast(context, t, this)
+    fun cast(t: TypeUse) = Cast(context, t, this)
 }
 
 interface ContainerExpression : ContainedExpression {
@@ -81,12 +85,13 @@ abstract class Expr(override val context: ExpressionContext, vararg expressions:
     override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) = children.reportUsedSymbols(c)
 }
 
-class ListExpr(context: ExpressionContext, val sep:String, val prefix: String, val suffix: String, vararg expressions: Expression):Expr(context, *expressions) {
+class ListExpr(context: ExpressionContext, val sep:String, val prefix: String, val suffix: String, vararg expressions: Expression):
+    Expr(context, *expressions) {
     override fun generate(output: OutputContext) {
         output.list(children, sep, prefix, suffix)
     }
 
-    fun el(e:Expression) = children.add(e)
+    fun el(e: Expression) = children.add(e)
 }
 
 class Var(context: ExpressionContext, val name: String) : SingleExpr(context) {
@@ -128,13 +133,13 @@ class Inv(context: ExpressionContext, override val qualifiedName: QualifiedName)
     override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) = c.add(args, typeArgs)
 }
 
-class Deref(context: ExpressionContext, typeUse: TypeUse, expression:Expression) : Expr(context, typeUse, expression) {
+class Deref(context: ExpressionContext, typeUse: TypeUse, expression: Expression) : Expr(context, typeUse, expression) {
     override fun generate(output: OutputContext) {
         output.g(children[0]).w(".").g(children[1])
     }
 }
 
-class Cast(context: ExpressionContext, typeUse: TypeUse, expression:Expression) : Expr(context, typeUse, expression) {
+class Cast(context: ExpressionContext, typeUse: TypeUse, expression: Expression) : Expr(context, typeUse, expression) {
     override fun generate(output: OutputContext) {
         output.g(children[1]).w(" as ").g(children[0])
     }

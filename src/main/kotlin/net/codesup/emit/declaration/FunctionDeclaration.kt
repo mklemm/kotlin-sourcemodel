@@ -1,10 +1,12 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.*
-import net.codesup.util.emit.use.ClassTypeUse
-import net.codesup.util.emit.use.FunctionTypeUse
-import net.codesup.util.emit.use.TypeUse
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.OutputContext
+import net.codesup.emit.Parameterized
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.use.ClassTypeUse
+import net.codesup.emit.use.FunctionTypeUse
+import net.codesup.emit.use.TypeUse
+import net.codesup.emit.use.Use
 
 open class FunctionDeclaration(override val name:String): CallableDeclaration<FunctionDeclaration>(),
     NamedDeclaration<FunctionDeclaration>, Parameterized {

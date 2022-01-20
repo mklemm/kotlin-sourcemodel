@@ -1,4 +1,4 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
 /**
  * @author Mirko Klemm 2021-12-28

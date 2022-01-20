@@ -1,13 +1,13 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.Generable
-import net.codesup.util.emit.OutputContext
+import net.codesup.emit.Generable
+import net.codesup.emit.OutputContext
 
 /**
  * @author Mirko Klemm 2022-01-12
  *
  */
-class KDocBuilder:Generable {
+class KDocBuilder: Generable {
     val lines = mutableListOf<String>()
     override fun generate(output: OutputContext) {
         if(lines.isNotEmpty()) {

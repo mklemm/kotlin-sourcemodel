@@ -1,6 +1,6 @@
-package net.codesup.util.emit
+package net.codesup.emit
 
-import net.codesup.util.emit.declaration.ParameterDeclaration
+import net.codesup.emit.declaration.ParameterDeclaration
 
 /**
  * @author Mirko Klemm 2021-03-19

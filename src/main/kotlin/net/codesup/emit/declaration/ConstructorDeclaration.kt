@@ -1,9 +1,9 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.Parameterized
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.OutputContext
+import net.codesup.emit.Parameterized
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.use.Use
 
 class ConstructorDeclaration : CallableDeclaration<ConstructorDeclaration>(), Parameterized {
     override val parameters = mutableListOf<ParameterDeclaration>()

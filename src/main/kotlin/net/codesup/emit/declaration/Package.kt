@@ -1,8 +1,12 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
+import net.codesup.emit.*
+import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.util.emit.*
-import net.codesup.util.emit.use.AnnotationUse
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.declaration.Declaration
+import net.codesup.emit.declaration.KDocBuilder
+import net.codesup.emit.use.AnnotationUse
+import net.codesup.emit.use.Use
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -39,5 +43,5 @@ class Package(val qualifiedName: QualifiedName): Generable, Expression, Declarat
         TODO("Not yet implemented")
     }
 
-    fun _package(name: String):Package = Package(qualifiedName.resolve(name))
+    fun _package(name: String): Package = Package(qualifiedName.resolve(name))
 }

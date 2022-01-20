@@ -1,8 +1,7 @@
-package net.codesup.util.emit
+package net.codesup.emit
 
-import net.codesup.util.emit.declaration.FunctionDeclaration
-import net.codesup.util.emit.declaration.PropertyDeclaration
-import net.codesup.util.emit.use.TypeUse
+import net.codesup.emit.declaration.FunctionDeclaration
+import net.codesup.emit.declaration.PropertyDeclaration
 
 /**
  * @author Mirko Klemm 2021-03-18

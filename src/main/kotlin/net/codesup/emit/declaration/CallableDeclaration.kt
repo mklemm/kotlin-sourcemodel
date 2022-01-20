@@ -1,10 +1,10 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.use.AnnotationUse
-import net.codesup.util.emit.Assign
-import net.codesup.util.emit.Block
-import net.codesup.util.emit.Expression
-import net.codesup.util.emit.QualifiedName
+import net.codesup.emit.use.AnnotationUse
+import net.codesup.emit.Assign
+import net.codesup.emit.Block
+import net.codesup.emit.Expression
+import net.codesup.emit.QualifiedName
 
 /**
  * @author Mirko Klemm 2021-03-18

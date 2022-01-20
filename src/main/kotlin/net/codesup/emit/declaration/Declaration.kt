@@ -1,9 +1,10 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.Annotatable
-import net.codesup.util.emit.Expression
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.Annotatable
+import net.codesup.emit.Expression
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.declaration.KDocBuilder
+import net.codesup.emit.use.Use
 
 /**
  * @author Mirko Klemm 2021-03-18
@@ -12,7 +13,7 @@ import net.codesup.util.emit.use.Use
 interface Declaration<T: Declaration<T>>: Expression, Annotatable {
     val declarations:MutableList<Declaration<*>>
     val name:String
-    val doc:KDocBuilder
+    val doc: KDocBuilder
 
     fun use(block: Use<T>.() -> Unit = {}): Use<T>
     fun ref(block: Use<T>.() -> Unit): Use<T>
@@ -23,6 +24,6 @@ interface Declaration<T: Declaration<T>>: Expression, Annotatable {
         declarations.forEach { it.reportDeclaredSymbols(myQualifiedName, c) }
     }
 
-    fun doc(s:String):KDocBuilder = doc.apply { lines.add(s) }
-    fun doc(block:KDocBuilder.() -> Unit) = doc.apply(block)
+    fun doc(s:String): KDocBuilder = doc.apply { lines.add(s) }
+    fun doc(block: KDocBuilder.() -> Unit) = doc.apply(block)
 }

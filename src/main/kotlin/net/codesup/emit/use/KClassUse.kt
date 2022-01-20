@@ -1,7 +1,8 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.declaration.Package
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.declaration.Package
+import net.codesup.emit.use.ClassTypeUse
 import kotlin.reflect.KClass
 
 open class KClassUse<T:Any>(val kClass: KClass<T>) : ClassTypeUse(QualifiedName(kClass.qualifiedName ?: "<unnamed>")) {
@@ -12,7 +13,7 @@ open class KClassUse<T:Any>(val kClass: KClass<T>) : ClassTypeUse(QualifiedName(
         val string = KClassUse(String::class)
     }
 
-    override fun copy(qualifiedName: QualifiedName, block:ClassTypeUse.() -> Unit) = KClassUse(kClass).apply {
+    override fun copy(qualifiedName: QualifiedName, block: ClassTypeUse.() -> Unit) = KClassUse(kClass).apply {
         this.isNullable = this@KClassUse.isNullable
         this.annotations.addAll(this@KClassUse.annotations)
         this.typeArguments.addAll(this@KClassUse.typeArguments)

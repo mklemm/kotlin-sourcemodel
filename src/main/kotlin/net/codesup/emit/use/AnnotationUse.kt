@@ -1,8 +1,9 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.*
+import net.codesup.emit.*
 
-class AnnotationUse(val classTypeUse: ClassTypeUse, val isParameter: Boolean = false) : TypeUse(), Qualifiable, ExpressionContext {
+class AnnotationUse(val classTypeUse: ClassTypeUse, val isParameter: Boolean = false) : TypeUse(), Qualifiable,
+    ExpressionContext {
     constructor(a: Annotation, isParameter: Boolean = false):this(KClassUse(a.annotationClass), isParameter) {
 
     }

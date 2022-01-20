@@ -1,7 +1,7 @@
-package net.codesup.util.emit.use
+package net.codesup.emit.use
 
-import net.codesup.util.emit.Generable
-import net.codesup.util.emit.declaration.Declaration
+import net.codesup.emit.Generable
+import net.codesup.emit.declaration.Declaration
 
 /**
  * @author Mirko Klemm 2021-03-18

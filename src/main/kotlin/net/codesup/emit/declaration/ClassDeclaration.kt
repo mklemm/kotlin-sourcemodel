@@ -1,17 +1,23 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.use.AnnotationUse
-import net.codesup.util.emit.use.ClassTypeUse
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.use.SuperclassRef
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.declaration.DeclarationOwner
+import net.codesup.emit.declaration.ObjectDeclaration
+import net.codesup.emit.declaration.PrimaryConstructorDeclaration
+import net.codesup.emit.declaration.TypeParamDeclaration
+import net.codesup.emit.use.AnnotationUse
+import net.codesup.emit.use.ClassTypeUse
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.util.emit.declaration.*
+import net.codesup.emit.use.SuperclassRef
+import net.codesup.emit.use.Use
 
 /**
  * @author Mirko Klemm 2021-03-19
  *
  */
-class ClassDeclaration(override val name: String, val keyword:String = "class") : NamedDeclaration<ClassDeclaration>, DeclarationOwner<ClassDeclaration> {
+class ClassDeclaration(override val name: String, val keyword:String = "class") : NamedDeclaration<ClassDeclaration>,
+    DeclarationOwner<ClassDeclaration> {
     override val annotations = mutableListOf<AnnotationUse>()
     override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {
         c.add(annotations, declarations, typeParameters, superTypes)
@@ -58,13 +64,13 @@ class ClassDeclaration(override val name: String, val keyword:String = "class") 
         this.primaryConstructor = PrimaryConstructorDeclaration().apply(block)
     }
 
-    fun _constructor(block: ConstructorDeclaration.() -> Unit = {}):ConstructorDeclaration =
+    fun _constructor(block: ConstructorDeclaration.() -> Unit = {}): ConstructorDeclaration =
         ConstructorDeclaration().apply(block).also { declarations.add(it) }
 
 
-    fun _object(name: String = "", block:ObjectDeclaration.() -> Unit = {}):ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration} ?: ObjectDeclaration(name).apply(block).also{declarations.add(it)}
+    fun _object(name: String = "", block: ObjectDeclaration.() -> Unit = {}): ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration } ?: ObjectDeclaration(name).apply(block).also{declarations.add(it)}
 
-    fun _companion(name: String = "", block:ObjectDeclaration.() -> Unit = {}):ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration} ?: ObjectDeclaration(name).apply { isCompanion() }.apply(block).also{declarations.add(it)}
+    fun _companion(name: String = "", block: ObjectDeclaration.() -> Unit = {}): ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration } ?: ObjectDeclaration(name).apply { isCompanion() }.apply(block).also{declarations.add(it)}
 
     fun typeParam(name:String, block: TypeParamDeclaration.() -> Unit) {
         typeParameters.add(TypeParamDeclaration(name).apply(block))
@@ -78,7 +84,7 @@ class ClassDeclaration(override val name: String, val keyword:String = "class") 
         superTypes.add(SuperclassRef(typeUse).apply(block))
     }
 
-    fun modifier(vararg mod:ClassModifier) = modifiers.addAll(mod.toList())
+    fun modifier(vararg mod: ClassModifier) = modifiers.addAll(mod.toList())
     fun isOpen() = modifier(ClassModifier.OPEN)
     fun isPrivate() = modifier(ClassModifier.PRIVATE)
     fun isPublic() = modifier(ClassModifier.PUBLIC)

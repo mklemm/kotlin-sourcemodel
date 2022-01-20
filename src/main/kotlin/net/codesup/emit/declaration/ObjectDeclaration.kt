@@ -1,17 +1,18 @@
-package net.codesup.util.emit.declaration
+package net.codesup.emit.declaration
 
-import net.codesup.util.emit.use.AnnotationUse
-import net.codesup.util.emit.use.ClassTypeUse
-import net.codesup.util.emit.OutputContext
-import net.codesup.util.emit.QualifiedName
-import net.codesup.util.emit.use.SuperclassRef
-import net.codesup.util.emit.use.Use
+import net.codesup.emit.use.AnnotationUse
+import net.codesup.emit.use.ClassTypeUse
+import net.codesup.emit.OutputContext
+import net.codesup.emit.QualifiedName
+import net.codesup.emit.use.SuperclassRef
+import net.codesup.emit.use.Use
 
 /**
  * @author Mirko Klemm 2021-03-19
  *
  */
-class ObjectDeclaration(override val name: String = "") : NamedDeclaration<ObjectDeclaration>, DeclarationOwner<ObjectDeclaration> {
+class ObjectDeclaration(override val name: String = "") : NamedDeclaration<ObjectDeclaration>,
+    DeclarationOwner<ObjectDeclaration> {
     override val annotations = mutableListOf<AnnotationUse>()
     override val doc: KDocBuilder = KDocBuilder()
     override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {
@@ -60,7 +61,7 @@ class ObjectDeclaration(override val name: String = "") : NamedDeclaration<Objec
         superTypes.add(SuperclassRef(typeUse).apply(block))
     }
 
-    fun modifier(vararg mod:ObjectModifier) = modifiers.addAll(mod.toList())
+    fun modifier(vararg mod: ObjectModifier) = modifiers.addAll(mod.toList())
     fun isPrivate() = modifier(ObjectModifier.PRIVATE)
     fun isPublic() = modifier(ObjectModifier.PUBLIC)
     fun isSealed() = modifier(ObjectModifier.SEALED)
