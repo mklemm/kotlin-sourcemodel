@@ -1,42 +1,45 @@
 package net.codesup.emit.declaration
 
 import net.codesup.emit.OutputContext
-import net.codesup.emit.QualifiedName
-import net.codesup.emit.use.Use
+import net.codesup.emit.SourceBuilder
+import net.codesup.emit.Symbol
 
-class PrimaryConstructorDeclaration(): CallableDeclaration<PrimaryConstructorDeclaration>() {
-    val parameters = mutableListOf<PrimaryConstructorParameterDeclaration<*>>()
+class PrimaryConstructorDeclaration(sourceBuilder: SourceBuilder) : CallableDeclaration(sourceBuilder) {
+    val parameters = mutableListOf<TypedElementDeclaration>()
     override val doc: KDocBuilder = KDocBuilder()
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         if(modifiers.isNotEmpty()) {
             modifiers.forEach {
                 output.w(it).w(" ")
             }
             output.w("constructor ")
         }
-        output.list(parameters, ", ", "(", ")")
+        output.list(scope, parameters, prefix = "(", suffix = ")")
     }
 
-    fun generateBlock(output: OutputContext) {
+    fun generateBlock(scope: DeclarationScope, output: OutputContext) {
         block?.let { b ->
             output.wl("init ")
-            output.g(b)
+            output.g(scope, b)
         }
     }
 
-    override fun use(block: Use<PrimaryConstructorDeclaration>.() -> Unit): Use<PrimaryConstructorDeclaration> {
-        TODO("Not yet implemented")
-    }
-
-    override fun ref(block: Use<PrimaryConstructorDeclaration>.() -> Unit): Use<PrimaryConstructorDeclaration> {
-        TODO("Not yet implemented")
-    }
-
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) {
             super.reportUsedSymbols(c)
             parameters.reportUsedSymbols(c)
         }
 
-    fun param(name:String, block: ParameterDeclaration.() -> Unit) = parameters.add(ParameterDeclaration(name).apply(block))
-    fun property(name:String, block: PropertyDeclaration.() -> Unit) = parameters.add(PropertyDeclaration(name).apply(block))
+    fun param(name:String, block: ParameterDeclaration.() -> Unit) = ParameterDeclaration(
+        sourceBuilder,
+        name
+    ).apply(block).also{parameters.add(it)}
+
+    fun property(name:String, block: PropertyDeclaration.() -> Unit) = PropertyDeclaration(
+        sourceBuilder,
+        name
+    ).apply(block).also{parameters.add(it)}
+
+    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
+        return null
+    }
 }

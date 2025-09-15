@@ -2,39 +2,43 @@ package net.codesup.emit.use
 
 import net.codesup.emit.*
 import net.codesup.emit.declaration.ClassDeclaration
-import net.codesup.emit.declaration.TypeParamProjection
+import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.ExternalTypeDeclaration
+import net.codesup.emit.declaration.FunctionTypeDeclaration
+import net.codesup.emit.declaration.KClassDeclaration
+import net.codesup.emit.declaration.TypeParameterDeclaration
+import net.codesup.emit.expressions.DotClass
+import net.codesup.emit.expressions.ExpressionContext
 import kotlin.reflect.KClass
 
-open class ClassTypeUse(override val qualifiedName: QualifiedName) : TypeUse(), Qualifiable, Use<ClassDeclaration>,
-    ExpressionContext {
-    constructor(vararg qName: String) : this(QualifiedName(*qName))
+open class ClassTypeUse(sourceBuilder: SourceBuilder, declaration: ClassDeclaration) : TypeUse(sourceBuilder, declaration), Use {
 
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) {
         super.reportUsedSymbols(c)
-        c.add(qualifiedName)
+        c.add(declaration)
         c.add(typeArguments)
     }
 
     val typeArguments = mutableListOf<TypeUse>()
 
-    fun arg(typeName: String, block: ClassTypeUse.() -> Unit) {
-        typeArguments.add(ClassTypeUse(typeName).apply(block))
+    fun arg(typeParamName: String, block: TypeParameterUse.() -> Unit = {}) {
+        typeArguments.add(TypeParameterUse(sourceBuilder, TypeParameterDeclaration(sourceBuilder, typeParamName)).apply(block))
     }
 
-    fun arg(typeName: QualifiedName, block: ClassTypeUse.() -> Unit = {}) {
-        typeArguments.add(ClassTypeUse(typeName).apply(block))
+    fun arg(typeParam: TypeParameterDeclaration, block: TypeParameterUse.() -> Unit = {}) {
+        typeArguments.add(TypeParameterUse(sourceBuilder, typeParam).apply(block))
     }
 
-    fun arg(typeParamName: String, projection: TypeParamProjection? = null, block: TypeParameterUse.() -> Unit = {}) {
-        typeArguments.add(TypeParameterUse(typeParamName, projection).apply(block))
+    fun arg(type: ClassDeclaration, block: ClassTypeUse.() -> Unit = {}) {
+        typeArguments.add(sourceBuilder.typeUse(type, block))
     }
 
-    fun arg(type: ClassTypeUse, block: ClassTypeUse.() -> Unit = {}) {
-        typeArguments.add(type.copy().apply(block))
+    fun arg(type: ExternalTypeDeclaration, block: ExternalTypeUse.() -> Unit = {}) {
+        typeArguments.add(sourceBuilder.typeUse(type, block))
     }
 
-    fun arg(block: FunctionTypeUse.() -> Unit) {
-        typeArguments.add(FunctionTypeUse().apply(block))
+    fun arg(decl: FunctionTypeDeclaration, block: FunctionTypeUse.() -> Unit) {
+        typeArguments.add(FunctionTypeUse(sourceBuilder, decl).apply(block))
     }
 
     fun arg(typeArg: TypeUse) {
@@ -42,28 +46,24 @@ open class ClassTypeUse(override val qualifiedName: QualifiedName) : TypeUse(), 
     }
 
     fun <T : Any> arg(kClass: KClass<T>, block: KClassUse<T>.() -> Unit) {
-        typeArguments.add(KClassUse<T>(kClass).apply(block))
+        typeArguments.add(KClassUse<T>(sourceBuilder, KClassDeclaration(sourceBuilder, kClass)).apply(block))
     }
 
-    override var top: Expression? = null
-
-    fun dotClass() = DotClass(this, this)
-    fun ref(e: Expression) = Deref(this, this, e)
-    fun _new(block: ConstructorInv.() -> Unit) = ConstructorInv(this, this).apply(block).also { top = it }
+    fun dotClass() = DotClass(sourceBuilder,this)
 
     val isParameterized:Boolean get() = typeArguments.isNotEmpty()
 
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         annotations.forEach { anno ->
-            output.g(anno).w(" ")
+            output.g(scope, anno).w(" ")
         }
-        output.w(qualifiedName)
+        output.w(sourceBuilder.qualifiedNameOf(declaration) ?: QualifiedName(declaration.name))
         if (isNullable) output.w("?")
-        output.list(typeArguments, ", ", "<", ">")
+        output.list(scope, typeArguments, prefix = "<", suffix = ">")
     }
 
-    open fun copy(qualifiedName: QualifiedName = this.qualifiedName, block: ClassTypeUse.() -> Unit = {}) =
-        ClassTypeUse(qualifiedName).apply {
+    open fun copy(newDeclaration: ClassDeclaration = (declaration as ClassDeclaration), block: ClassTypeUse.() -> Unit = {}) =
+        ClassTypeUse(sourceBuilder, newDeclaration).apply {
             this.isNullable = this@ClassTypeUse.isNullable
             this.annotations.addAll(this@ClassTypeUse.annotations)
             this.typeArguments.addAll(this@ClassTypeUse.typeArguments)

@@ -1,21 +1,18 @@
 package net.codesup.emit.declaration
 
 import net.codesup.emit.OutputContext
-import net.codesup.emit.use.Use
+import net.codesup.emit.SourceBuilder
+import net.codesup.emit.Symbol
 
-class SetterDeclaration(val parameterName:String = "value"): CallableDeclaration<SetterDeclaration>() {
+class SetterDeclaration(sourceBuilder: SourceBuilder, val parameterName:String = "value"): CallableDeclaration(sourceBuilder) {
     override val doc: KDocBuilder = KDocBuilder()
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         output.w(modifiers.joinToString(" "))
         output.w("set(").q(parameterName).w(")")
-        block?.generate(output)
+        block?.generate(scope, output)
     }
 
-    override fun use(block: Use<SetterDeclaration>.() -> Unit): Use<SetterDeclaration> {
-        TODO("Not yet implemented")
-    }
-
-    override fun ref(block: Use<SetterDeclaration>.() -> Unit): Use<SetterDeclaration> {
-        TODO("Not yet implemented")
+    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
+        return null
     }
 }

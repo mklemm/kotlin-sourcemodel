@@ -1,8 +1,8 @@
 package net.codesup.emit.declaration
 
 import net.codesup.emit.*
+import net.codesup.emit.expressions.Expression
 import net.codesup.emit.use.AnnotationUse
-import net.codesup.emit.use.Use
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -10,15 +10,18 @@ import java.nio.file.Paths
  * @author Mirko Klemm 2021-03-19
  *
  */
-class Package(val qualifiedName: QualifiedName): Generable, Expression, DeclarationOwner<Package> {
+class PackageDeclaration(sourceBuilder: SourceBuilder, val qualifiedName: QualifiedName): NamedDeclaration(
+    sourceBuilder,
+    qualifiedName.localPart
+), Generable, DeclarationScope {
     override val name = qualifiedName.toString()
     override val doc: KDocBuilder = KDocBuilder()
     override val annotations = mutableListOf<AnnotationUse>()
-    override val declarations: MutableList<Declaration<*>> = mutableListOf()
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) = c.add(declarations)
+    override val declarations: MutableList<Declaration> = mutableListOf()
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) = c.add(declarations)
 
-    override fun generate(output: OutputContext) {
-        declarations.forEach { it.generate(output) }
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
+        declarations.forEach { it.generate(scope, output) }
     }
 
     val isRoot = qualifiedName.isEmpty()
@@ -31,13 +34,8 @@ class Package(val qualifiedName: QualifiedName): Generable, Expression, Declarat
 
     fun _file(name:String, block: SourceFile.() -> Unit) = sourceFile(this, name, block)
 
-    override fun use(block: Use<Package>.() -> Unit): Use<Package> {
-        TODO("Not yet implemented")
+    fun _package(name: String): PackageDeclaration = PackageDeclaration(sourceBuilder, qualifiedName.resolve(name))
+    override fun addDeclaration(declaration: Declaration) {
+        declarations.add(declaration)
     }
-
-    override fun ref(block: Use<Package>.() -> Unit): Use<Package> {
-        TODO("Not yet implemented")
-    }
-
-    fun _package(name: String): Package = Package(qualifiedName.resolve(name))
 }

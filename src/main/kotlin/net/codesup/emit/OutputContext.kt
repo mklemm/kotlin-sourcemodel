@@ -1,5 +1,6 @@
 package net.codesup.emit
 
+import net.codesup.emit.declaration.DeclarationScope
 import java.io.BufferedWriter
 import java.nio.file.Files
 import java.nio.file.Path
@@ -37,8 +38,8 @@ class OutputContext(val target: Path) {
         return this
     }
 
-    fun g(obj: Generable?): OutputContext {
-        obj?.generate(this)
+    fun g(scope: DeclarationScope, obj: Generable?): OutputContext {
+        obj?.generate(scope, this)
         return this
     }
 
@@ -47,6 +48,10 @@ class OutputContext(val target: Path) {
     fun wl(s: String = ""): OutputContext {
         w(s)
         w(System.lineSeparator())
+        return this
+    }
+
+    fun wi(): OutputContext {
         w(indentChars.repeat(indent))
         return this
     }
@@ -54,7 +59,7 @@ class OutputContext(val target: Path) {
     fun increaseIndent(): Int = indent++
     fun decreaseIndent(): Int = --indent
 
-    fun <T : Generable> list(
+    fun <T : Generable> list(scope: DeclarationScope,
         list: List<T>,
         separator: String = ", ",
         prefix: String = "",
@@ -66,7 +71,7 @@ class OutputContext(val target: Path) {
                 if (index > 0) {
                     w(separator)
                 }
-                t.generate(this)
+                t.generate(scope, this)
             }
             w(suffix)
         }
@@ -88,4 +93,4 @@ class OutputContext(val target: Path) {
     }
 }
 
-fun quote(name: String): String = if (name in reservedWords) "`$name`" else name
+fun quote(name: String): String = if (name in reservedWords || (name.firstOrNull()?.let { f -> f !in 'A'..'Z' && f !in 'a'..'z' && f != '_'} == true )) "`$name`" else name

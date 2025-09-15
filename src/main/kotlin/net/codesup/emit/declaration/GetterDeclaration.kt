@@ -1,23 +1,19 @@
 package net.codesup.emit.declaration
 
 import net.codesup.emit.OutputContext
-import net.codesup.emit.QualifiedName
-import net.codesup.emit.use.Use
+import net.codesup.emit.SourceBuilder
+import net.codesup.emit.Symbol
 
-class GetterDeclaration: CallableDeclaration<GetterDeclaration>() {
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) = c.add(block)
+class GetterDeclaration(sourceBuilder: SourceBuilder) : CallableDeclaration(sourceBuilder) {
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) = c.add(block)
     override val doc: KDocBuilder = KDocBuilder()
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         output.w(modifiers.joinToString(" "))
         output.w("get()")
-        block?.generate(output)
+        block?.generate(scope, output)
     }
 
-    override fun use(block: Use<GetterDeclaration>.() -> Unit): Use<GetterDeclaration> {
-        TODO("Not yet implemented")
-    }
-
-    override fun ref(block: Use<GetterDeclaration>.() -> Unit): Use<GetterDeclaration> {
-        TODO("Not yet implemented")
+    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
+        return null
     }
 }

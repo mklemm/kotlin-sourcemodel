@@ -1,27 +1,32 @@
 package net.codesup.emit.use
 
 import net.codesup.emit.*
+import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.TypeDeclaration
+import net.codesup.emit.expressions.ConstructorInv
+import kotlin.reflect.KClass
 
-class AnnotationUse(val classTypeUse: ClassTypeUse, val isParameter: Boolean = false) : TypeUse(), Qualifiable,
-    ExpressionContext {
-    constructor(a: Annotation, isParameter: Boolean = false):this(KClassUse(a.annotationClass), isParameter) {
+class AnnotationUse(sourceBuilder: SourceBuilder, val type: TypeDeclaration, val isParameter: Boolean = false) : TypeUse(sourceBuilder, type) {
+    constructor(sourceBuilder: SourceBuilder, a: Annotation, isParameter: Boolean = false):this(sourceBuilder,
+        sourceBuilder.externalType(
+            a.annotationClass
+        )
+    , isParameter)
 
-    }
+    constructor(sourceBuilder: SourceBuilder, annotationClass: KClass<*>, isParameter: Boolean = false):this(sourceBuilder,
+        sourceBuilder.externalType(annotationClass)
+    , isParameter)
+
     var target: AnnotationUseSiteTarget? = null
+    var constructorCall:ConstructorInv? = null
 
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         if(!isParameter) {
             output.w("@${if (target != null) "${target?.value ?: ""}:" else ""}")
         }
-        top?.generate(output) ?: output.w("()")
+        constructorCall?.generate(scope, output) ?: output.w("()")
     }
 
-    fun args(block: ConstructorInv.() -> Unit = {}) = ConstructorInv(this, classTypeUse).apply(block).also { top = it }
-
-    override var top: Expression? = null
-
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) = c.add(top)
-    override val qualifiedName: QualifiedName
-        get() = classTypeUse.qualifiedName
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) = c.add(constructorCall)
 
 }

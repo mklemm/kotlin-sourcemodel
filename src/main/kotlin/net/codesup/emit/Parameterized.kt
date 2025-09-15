@@ -7,6 +7,11 @@ import net.codesup.emit.declaration.ParameterDeclaration
  *
  */
 interface Parameterized {
-    val parameters:MutableList<ParameterDeclaration>
-    fun param(name:String, block: ParameterDeclaration.() -> Unit) = ParameterDeclaration(name).apply(block).also { parameters.add(it) }
+    val sourceBuilder: SourceBuilder
+    val parameters: MutableList<ParameterDeclaration>
+
+    fun param(
+        name: String,
+        block: ParameterDeclaration.() -> Unit
+    ): ParameterDeclaration = ParameterDeclaration(sourceBuilder, name).apply(block).also { parameters.add(it) }
 }

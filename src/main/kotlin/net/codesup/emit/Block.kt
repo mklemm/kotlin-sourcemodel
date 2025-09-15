@@ -1,44 +1,64 @@
 package net.codesup.emit
 
+import net.codesup.emit.declaration.Declaration
+import net.codesup.emit.declaration.DeclarationScope
 import net.codesup.emit.declaration.FunctionDeclaration
 import net.codesup.emit.declaration.PropertyDeclaration
+import net.codesup.emit.declaration.TypedElementDeclaration
+import net.codesup.emit.expressions.Assign
+import net.codesup.emit.expressions.Expression
+import net.codesup.emit.expressions.ExpressionContext
+import net.codesup.emit.expressions.ExpressionFactory
+import net.codesup.emit.expressions.PropertyVar
+import net.codesup.emit.expressions.Statement
+import net.codesup.emit.expressions.StatementContext
+import net.codesup.emit.expressions.Variable
 
 /**
  * @author Mirko Klemm 2021-03-18
  *
  */
-open class Block : ContainerExpression, ExpressionContext {
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) = c.add(children)
-    override val children: MutableList<Expression> = mutableListOf()
-    override var top: Expression? = null
-    override val context: ExpressionContext
-        get() = this
+open class Block(val sourceBuilder: SourceBuilder) : StatementContext {
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) = c.add(statements)
+    override val statements: MutableList<Statement> = mutableListOf()
 
-    inline fun <reified T> ofType() = children.filterIsInstance<T>()
-    fun functions(): List<FunctionDeclaration> = children.filterIsInstance<FunctionDeclaration>()
+    inline fun <reified T> ofType() = statements.filterIsInstance<T>()
+    fun functions(): List<FunctionDeclaration> = statements.filterIsInstance<FunctionDeclaration>()
 
-    fun function(name: String, block: FunctionDeclaration.() -> Unit) {
-        top = FunctionDeclaration(name).apply(block)
+    fun _fun(name: String, block: FunctionDeclaration.() -> Unit) {
+        addStatement(FunctionDeclaration(sourceBuilder, name).apply(block))
     }
 
     fun property(name: String, block: PropertyDeclaration.() -> Unit) {
-        top = PropertyDeclaration(name).apply(block)
+        addStatement(PropertyDeclaration(sourceBuilder, name).apply(block))
     }
 
-    override fun generate(output: OutputContext) {
-        if (children.size == 1) {
-            output.w(" = ")
-        } else {
-            output.wl(" {")
-            output.increaseIndent()
+    fun _val(name: String, block: PropertyDeclaration.() -> Unit) {
+        property(name) {
+            isMutable = false
+            block()
         }
-        output.g(top)
-        //children.forEach { it.generate(output) }
-        output.wl()
-        if (children.size != 1) {
-            output.decreaseIndent()
-            output.wl("}")
+    }
+    fun _var(name: String, block: PropertyDeclaration.() -> Unit) {
+        property(name) {
+            isMutable = true
+            block()
         }
+    }
+
+    operator fun (ExpressionContext.() -> Unit).unaryPlus() = addStatement(ExpressionFactory(sourceBuilder).apply(this))
+    fun st(block:ExpressionContext.() -> Unit) = addStatement(ExpressionFactory(sourceBuilder).apply(block))
+
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
+        output.wl(" {")
+        output.increaseIndent()
+        statements.forEach {
+            output.wi()
+            it.generate(scope, output)
+            output.wl()
+        }
+        output.decreaseIndent()
+        output.wi().wl("}")
     }
 }
 

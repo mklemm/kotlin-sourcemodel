@@ -4,79 +4,81 @@ import net.codesup.emit.use.AnnotationUse
 import net.codesup.emit.use.ClassTypeUse
 import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
+import net.codesup.emit.SourceBuilder
+import net.codesup.emit.Symbol
 import net.codesup.emit.use.SuperclassRef
-import net.codesup.emit.use.Use
 
 /**
  * @author Mirko Klemm 2021-03-19
  *
  */
-class ClassDeclaration(override val name: String, val keyword:String = "class") : NamedDeclaration<ClassDeclaration>,
-    DeclarationOwner<ClassDeclaration> {
+class ClassDeclaration(
+    sourceBuilder: SourceBuilder,
+    name: String,
+    val classifierKind: ClassifierKind = ClassifierKind.CLASS
+)
+    : TypeDeclaration(sourceBuilder, name), DeclarationScope {
     override val annotations = mutableListOf<AnnotationUse>()
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) {
         c.add(annotations, declarations, typeParameters, superTypes)
         c.add(primaryConstructor)
     }
-    val modifiers = mutableSetOf<ClassModifier>()
     val superTypes = mutableListOf<SuperclassRef>()
     var primaryConstructor: PrimaryConstructorDeclaration? = null
-    val typeParameters = mutableListOf<TypeParamDeclaration>()
-    override val declarations = mutableListOf<Declaration<*>>()
+    override val declarations = mutableListOf<Declaration>()
     override val doc: KDocBuilder = KDocBuilder()
 
-    override fun use(block: Use<ClassDeclaration>.() -> Unit): ClassTypeUse {
-        TODO("Not yet implemented")
-    }
-
-    override fun ref(block: Use<ClassDeclaration>.() -> Unit): ClassTypeUse {
-        TODO("Not yet implemented")
-    }
-
-    override fun generate(output: OutputContext) {
-        doc.generate(output)
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
+        doc.generate(this, output)
         annotations.forEach {
-            it.generate(output)
+            it.generate(this, output)
             output.wl()
         }
         output.join(modifiers.map { it.value }," ", "", " ")
-            .w("$keyword ").q(name).list(typeParameters, ", ", "<", ">")
-            .g(primaryConstructor)
-            .list(superTypes, ", ", ": ", " ")
-            .list(typeParameters.flatMap { it.fullBoundaries }, ", ", " where ", " ")
+            .w("${classifierKind.keyword} ").q(name).list(this, typeParameters, prefix = "<", suffix = ">")
+            .g(this, primaryConstructor)
+            .list(this, superTypes, prefix = ": ", suffix = " ")
+            .list(this, typeParameters.flatMap { it.fullBoundaries }, prefix = " where ", suffix = " ")
         if(primaryConstructor?.block != null || declarations.isNotEmpty()) {
             output.wl(" {")
             output.increaseIndent()
-            output.g(primaryConstructor?.block).wl()
-            declarations.forEach { output.g(it).wl() }
+            output.g(this, primaryConstructor?.block).wl()
+            declarations.forEach {
+                output.wi().g(this, it).wl()
+            }
             output.decreaseIndent()
-            output.wl()
             output.wl("}")
         }
     }
 
     fun primaryConstructor(block: PrimaryConstructorDeclaration.() -> Unit) {
-        this.primaryConstructor = PrimaryConstructorDeclaration().apply(block)
+        this.primaryConstructor = PrimaryConstructorDeclaration(sourceBuilder).apply(block)
     }
 
     fun _constructor(block: ConstructorDeclaration.() -> Unit = {}): ConstructorDeclaration =
-        ConstructorDeclaration().apply(block).also { declarations.add(it) }
+        ConstructorDeclaration(sourceBuilder).apply(block).also { declarations.add(it) }
 
 
-    fun _object(name: String = "", block: ObjectDeclaration.() -> Unit = {}): ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration } ?: ObjectDeclaration(name).apply(block).also{declarations.add(it)}
+    fun _object(name: String = "", block: ObjectDeclaration.() -> Unit = {}): ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration } ?: ObjectDeclaration(
+        name,
+        sourceBuilder
+    ).apply(block).also{declarations.add(it)}
 
-    fun _companion(name: String = "", block: ObjectDeclaration.() -> Unit = {}): ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration } ?: ObjectDeclaration(name).apply { isCompanion() }.apply(block).also{declarations.add(it)}
-
-    fun typeParam(name:String, block: TypeParamDeclaration.() -> Unit) {
-        typeParameters.add(TypeParamDeclaration(name).apply(block))
-    }
+    fun _companion(name: String = "", block: ObjectDeclaration.() -> Unit = {}): ObjectDeclaration = declarations.singleOrNull { it is ObjectDeclaration && it.name == name }?.let { it as ObjectDeclaration } ?: ObjectDeclaration(
+        name,
+        sourceBuilder
+    ).apply { isCompanion() }.apply(block).also{declarations.add(it)}
 
     fun superType(qualifiedName: QualifiedName, block: SuperclassRef.() -> Unit = {}) {
-        superTypes.add(SuperclassRef(ClassTypeUse(qualifiedName)).apply(block))
+        superTypes.add(SuperclassRef(
+            sourceBuilder,
+            sourceBuilder.typeUse(qualifiedName)).apply(block))
+
     }
 
+
     fun superType(typeUse: ClassTypeUse, block: SuperclassRef.() -> Unit = {}) {
-        superTypes.add(SuperclassRef(typeUse).apply(block))
+        superTypes.add(SuperclassRef(sourceBuilder, typeUse).apply(block))
     }
 
     fun modifier(vararg mod: ClassModifier) = modifiers.addAll(mod.toList())
@@ -85,4 +87,7 @@ class ClassDeclaration(override val name: String, val keyword:String = "class") 
     fun isPublic() = modifier(ClassModifier.PUBLIC)
     fun isSealed() = modifier(ClassModifier.SEALED)
 
+    override fun addDeclaration(declaration: Declaration) {
+        declarations.add(declaration)
+    }
 }

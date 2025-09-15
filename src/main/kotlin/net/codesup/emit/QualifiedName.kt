@@ -1,5 +1,7 @@
 package net.codesup.emit
 
+import net.codesup.emit.declaration.DeclarationScope
+
 /**
  * @author Mirko Klemm 2021-12-21
  *
@@ -17,7 +19,7 @@ class QualifiedName(val parts:List<String>): Generable {
     val stringValue = parts.joinToString(".")
     val quotedStringValue = parts.joinToString(".") { quote(it) }
 
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         output.w(quotedStringValue)
     }
 

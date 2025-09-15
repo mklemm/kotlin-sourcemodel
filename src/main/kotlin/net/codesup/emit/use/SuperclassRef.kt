@@ -1,21 +1,28 @@
 package net.codesup.emit.use
 
 import net.codesup.emit.*
+import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.expressions.ConstructorInv
+import net.codesup.emit.expressions.SingleExpr
 
 /**
  * @author Mirko Klemm 2021-12-22
  *
  */
-class SuperclassRef(val classTypeUse: ClassTypeUse): SymbolUser, Generable, ExpressionContext {
-    override fun reportUsedSymbols(c: MutableCollection<QualifiedName>) {
+class SuperclassRef(override val sourceBuilder: SourceBuilder, val classTypeUse: TypeUse): SingleExpr(sourceBuilder) {
+    var constructorInvocation: ConstructorInv? = null
+
+    override fun reportUsedSymbols(c: MutableCollection<Symbol>) {
         c.add(classTypeUse)
-        c.add(top)
-    }
-    override var top: Expression? = null
-
-    override fun generate(output: OutputContext) {
-        (top ?: classTypeUse).generate(output)
     }
 
-    fun cons(block: ConstructorInv.() -> Unit = {}) = ConstructorInv(this, classTypeUse).apply(block).also { top = it }
+    fun cons(block: ConstructorInv.() -> Unit = {}) = ConstructorInv(sourceBuilder, classTypeUse.declaration).apply(block).also { constructorInvocation = it }
+
+    override fun generate(
+        scope: DeclarationScope,
+        output: OutputContext
+    ) {
+        classTypeUse.generate(scope, output)
+        constructorInvocation?.generate(scope, output)
+    }
 }

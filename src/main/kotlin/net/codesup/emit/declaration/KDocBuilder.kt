@@ -9,7 +9,7 @@ import net.codesup.emit.OutputContext
  */
 class KDocBuilder: Generable {
     val lines = mutableListOf<String>()
-    override fun generate(output: OutputContext) {
+    override fun generate(scope: DeclarationScope, output: OutputContext) {
         if(lines.isNotEmpty()) {
             output.wl("/**")
             lines.forEach {
