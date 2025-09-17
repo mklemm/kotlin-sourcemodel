@@ -6,7 +6,6 @@ import net.codesup.emit.Parameterized
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
-import net.codesup.emit.SymbolOwner
 import net.codesup.emit.use.TypeUse
 
 open class ExternalFunctionDeclaration(sourceBuilder: SourceBuilder, override val qualifiedName: QualifiedName): CallableDeclaration(sourceBuilder), Parameterized,
@@ -24,7 +23,7 @@ open class ExternalFunctionDeclaration(sourceBuilder: SourceBuilder, override va
     var returnType: TypeUse? = null
     val typeParameters = mutableListOf<TypeParameterDeclaration>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
 
     }
 

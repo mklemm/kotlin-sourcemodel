@@ -21,7 +21,7 @@ class ObjectDeclaration(name: String = "", sourceBuilder: SourceBuilder) : Named
     val superTypes = mutableListOf<SuperclassRef>()
     override val declarations = mutableListOf<Declaration>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         annotations.forEach {
             it.generate(this, output)
             output.wl()
@@ -63,9 +63,6 @@ class ObjectDeclaration(name: String = "", sourceBuilder: SourceBuilder) : Named
     fun isPublic() = modifier(ObjectModifier.PUBLIC)
     fun isSealed() = modifier(ObjectModifier.SEALED)
     fun isCompanion() = modifier(ObjectModifier.COMPANION)
-    override fun addDeclaration(declaration: Declaration) {
-        declarations.add(declaration)
-    }
-
+    override fun <D:Declaration> addDeclaration(declaration: D):D = declaration.also { declarations.add(it) }
 
 }

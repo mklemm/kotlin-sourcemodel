@@ -3,10 +3,10 @@ package net.codesup.emit.expressions
 import net.codesup.emit.OutputContext
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 
 abstract class NAryExpression(override val sourceBuilder: SourceBuilder, val token: String, val operands: List<Expression>) : Expression {
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         var first = true;
         for(operand in operands) {
             if(first) {

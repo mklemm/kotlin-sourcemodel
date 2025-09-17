@@ -9,7 +9,7 @@ class ConstructorDeclaration(sourceBuilder: SourceBuilder) : CallableDeclaration
     override val parameters = mutableListOf<ParameterDeclaration>()
 
     override val doc: KDocBuilder = KDocBuilder()
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         doc.generate(scope, output)
         modifiers.forEach {
             output.w(it).w(" ")

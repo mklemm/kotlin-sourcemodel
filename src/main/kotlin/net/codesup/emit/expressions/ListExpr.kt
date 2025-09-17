@@ -2,7 +2,7 @@ package net.codesup.emit.expressions
 
 import net.codesup.emit.OutputContext
 import net.codesup.emit.SourceBuilder
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 
 class ListExpr(
     context: SourceBuilder,
@@ -13,7 +13,7 @@ class ListExpr(
 ) :
     NAryExpression(context, sep, operands) {
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.list(scope, operands, token, prefix, suffix)
     }
 }

@@ -1,11 +1,9 @@
 package net.codesup.emit.declaration
 
-import net.codesup.emit.expressions.Assign
 import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
-import net.codesup.emit.expressions.Expression
 import net.codesup.emit.expressions.ExpressionContext
 import net.codesup.emit.expressions.ExpressionFactory
 import net.codesup.emit.expressions.Statement
@@ -37,7 +35,7 @@ class PropertyDeclaration(sourceBuilder: SourceBuilder, name: String) : TypedEle
     var type: TypeUse? = null
     val modifiers = mutableListOf<PropertyModifier>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         annotations.forEach {
             output.g(scope, it)
             output.wl()

@@ -88,7 +88,7 @@ class SourceBuilder : Generable, SymbolOwner {
     val nothingType = KClassDeclaration(this, Nothing::class)
     val stringType = KClassDeclaration(this, String::class)
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         packages.values.forEach {
             it.generate(it, output)
         }

@@ -10,8 +10,6 @@ import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
 import net.codesup.emit.declaration.*
 import net.codesup.emit.functionName
-import net.codesup.emit.localName
-import net.codesup.emit.sourceBuilder
 import net.codesup.emit.use.ExternalTypeUse
 import net.codesup.emit.use.KClassUse
 import net.codesup.emit.use.TypeUse
@@ -155,7 +153,7 @@ open class ExpressionFactory(val sourceBuilder: SourceBuilder) : ExpressionConte
         setExpression(BinaryExpression(sourceBuilder, " = ", this, e))
 
     override fun generate(
-        scope: DeclarationScope,
+        scope: DeclarationOwner,
         output: OutputContext
     ) {
         expression?.generate(scope, output)

@@ -45,13 +45,8 @@ sourceBuilder {
         _file("TestClass") {
             val myClass = _class("TestClass") { // create a class and capture it for further use
                 typeParam("T") { // create a type parameter with bounds
-                    bound {
-                        receiver(Any::class) {
-                            isNullable = true
-                        }
-                        type(myReturnClass) {
-                            arg("T")
-                        }
+                    bound(Any::class) {
+                        isNullable = true
                     }
                 }
                 primaryConstructor { // create a primary constructor with parameter property
@@ -99,22 +94,15 @@ make too much sense, but hey, it's an example:
 ```kotlin
 package net.codesup.util
 
-import kotlin.Any
 import kotlin.String
 import kotlin.Unit
 
-import java.time.LocalDateTime
+import net.codesup.util.AnotherClass
 
-import com.example.MyExternalClass
+class TestClass<T: Any?.() -> AnotherClass<T>>(val firstParam: AnotherClass) {
 
-class TestClass<T: Any?.() -> MyExternalClass<T>>(val firstParam: String) {
-
-	var `var`: MyExternalClass
-	val property2: MyExternalClass<T> = ((x - 1) * y)
-
-	fun <F: Any> myFunction(myParameter: TestClass<LocalDateTime>.() -> Unit) {
-		myParameter.myFunction(myParameter)
-	}
+    var `var`: String
+    val property2: AnotherClass<T> = ((x - 1) * y)
 
 }
 ```

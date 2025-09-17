@@ -25,13 +25,8 @@ class SourceBuilderTest {
                 _file("TestClass") {
                     val myClass = _class("TestClass") { // create a class and capture it for further use
                         typeParam("T") { // create a type parameter with bounds
-                            bound {
-                                receiver(Any::class) {
-                                    isNullable = true
-                                }
-                                type(myReturnClass) {
-                                    arg("T")
-                                }
+                            bound(Any::class) {
+                                isNullable = true
                             }
                         }
                         primaryConstructor { // create a primary constructor with parameter property
@@ -70,6 +65,57 @@ class SourceBuilderTest {
                         }
                     }
                 }
+            }
+        }.generate(OutputContext(Paths.get("build/generated-sources/test")))
+
+    }
+
+    @Test
+    fun testExample2() {
+        sourceBuilder {
+            val myReturnClass = externalType("com.example.MyExternalClass") // reference a class by name
+            _package("net.codesup.util") {
+                    val myClass = _class("TestClass2") { // create a class and capture it for further use
+                        typeParam("T") { // create a type parameter with bounds
+                            bound(Any::class) {
+                                isNullable = true
+                            }
+                        }
+                        primaryConstructor { // create a primary constructor with parameter property
+                            _val("firstParam") {
+                                type(String::class) // reference an existing class on the classpath
+                            }
+                        }
+                        _var("var") {
+                            type(myReturnClass)
+                        }
+                        _val("property2") { // create a property with type argument
+                            // and initializing expression
+                            type(myReturnClass) {
+                                arg("T") // set a type argument
+                            }
+                            init {
+                                (v("x") - 1) * v("y") // specify an initializing expression, "v" creates a variable
+                            }
+                        }
+                        _fun("myFunction") {
+                            typeParam("F") {
+                                bound(Any::class)
+                            }
+                            val myParam = param("myParameter") {
+                                type { // Generate a function type inline
+                                    receiver(this@_class) {
+                                        arg(LocalDateTime::class)
+                                    }
+                                }
+                            }
+                            block { // generate the function block
+                                st { // generate a separate statement in the block
+                                    myParam.call(this@_fun, v(myParam)) // generate a recursive function call
+                                }
+                            }
+                        }
+                    }
             }
         }.generate(OutputContext(Paths.get("build/generated-sources/test")))
 

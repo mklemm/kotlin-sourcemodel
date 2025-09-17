@@ -1,7 +1,7 @@
 package net.codesup.emit.use
 
 import net.codesup.emit.*
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.emit.expressions.ConstructorInv
 import net.codesup.emit.expressions.SingleExpr
 
@@ -19,7 +19,7 @@ class SuperclassRef(override val sourceBuilder: SourceBuilder, val classTypeUse:
     fun cons(block: ConstructorInv.() -> Unit = {}) = ConstructorInv(sourceBuilder, classTypeUse.declaration).apply(block).also { constructorInvocation = it }
 
     override fun generate(
-        scope: DeclarationScope,
+        scope: DeclarationOwner,
         output: OutputContext
     ) {
         classTypeUse.generate(scope, output)

@@ -17,7 +17,7 @@ open class ExternalMemberDeclaration(sourceBuilder: SourceBuilder, override val 
     var returnType: TypeUse? = null
     val typeParameters = mutableListOf<TypeParameterDeclaration>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
 
     }
 

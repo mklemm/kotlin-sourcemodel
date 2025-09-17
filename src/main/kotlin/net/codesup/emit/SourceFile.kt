@@ -21,7 +21,7 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
 
     override val declarations = mutableListOf<Declaration>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.file(packageName.toPath().resolve("${name}.kt")) {
             if (!packageName.isRoot) {
                 output.w("package ")
@@ -93,9 +93,7 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
     override val annotations = mutableListOf<AnnotationUse>()
 
     override val doc: KDocBuilder = KDocBuilder()
-    override fun addDeclaration(declaration: Declaration) {
-        declarations.add(declaration)
-    }
+    override fun <D:Declaration> addDeclaration(declaration: D):D = declaration.also { declarations.add(it) }
 
     override fun pathTo(symbol: Symbol): Sequence<Symbol>? =
         if(symbol == this)

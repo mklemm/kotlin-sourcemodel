@@ -5,7 +5,6 @@ import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
 import net.codesup.emit.expressions.ExpressionContext
 import net.codesup.emit.expressions.ExpressionFactory
-import net.codesup.emit.expressions.Invocation
 import net.codesup.emit.use.AnnotationUse
 
 /**
@@ -17,7 +16,7 @@ class EnumConstantDeclaration(sourceBuilder: SourceBuilder, name: String, val ex
     override val annotations: MutableList<AnnotationUse> = mutableListOf()
 
     override fun generate(
-        scope: DeclarationScope,
+        scope: DeclarationOwner,
         output: OutputContext
     ) {
         output.w(name)

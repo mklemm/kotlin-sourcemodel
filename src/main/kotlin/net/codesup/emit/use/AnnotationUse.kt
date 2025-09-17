@@ -1,7 +1,7 @@
 package net.codesup.emit.use
 
 import net.codesup.emit.*
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.emit.declaration.TypeDeclaration
 import net.codesup.emit.expressions.ConstructorInv
 import kotlin.reflect.KClass
@@ -20,7 +20,7 @@ class AnnotationUse(sourceBuilder: SourceBuilder, val type: TypeDeclaration, val
     var target: AnnotationUseSiteTarget? = null
     var constructorCall:ConstructorInv? = null
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         if(!isParameter) {
             output.w("@${if (target != null) "${target?.value ?: ""}:" else ""}")
         }

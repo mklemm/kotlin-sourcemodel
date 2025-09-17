@@ -1,5 +1,6 @@
 package net.codesup.emit
 
+import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.emit.declaration.DeclarationScope
 import java.io.BufferedWriter
 import java.nio.file.Files
@@ -38,7 +39,7 @@ class OutputContext(val target: Path) {
         return this
     }
 
-    fun g(scope: DeclarationScope, obj: Generable?): OutputContext {
+    fun g(scope: DeclarationOwner, obj: Generable?): OutputContext {
         obj?.generate(scope, this)
         return this
     }
@@ -59,7 +60,7 @@ class OutputContext(val target: Path) {
     fun increaseIndent(): Int = indent++
     fun decreaseIndent(): Int = --indent
 
-    fun <T : Generable> list(scope: DeclarationScope,
+    fun <T : Generable> list(scope: DeclarationOwner,
         list: List<T>,
         separator: String = ", ",
         prefix: String = "",

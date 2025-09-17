@@ -7,7 +7,7 @@ import net.codesup.emit.Symbol
 class PrimaryConstructorDeclaration(sourceBuilder: SourceBuilder) : CallableDeclaration(sourceBuilder) {
     val parameters = mutableListOf<TypedElementDeclaration>()
     override val doc: KDocBuilder = KDocBuilder()
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         if (modifiers.isNotEmpty()) {
             modifiers.forEach {
                 output.w(it).w(" ")

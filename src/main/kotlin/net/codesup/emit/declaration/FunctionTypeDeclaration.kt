@@ -24,7 +24,7 @@ class FunctionTypeDeclaration(sourceBuilder: SourceBuilder) : TypeDeclaration(so
     var parameterTypes = mutableListOf<TypeUse>()
     var returnType: TypeUse = sourceBuilder.typeUse(sourceBuilder.unitType)
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         if (receiverType != null) {
             receiverType?.generate(scope, output)
             output.w(".")

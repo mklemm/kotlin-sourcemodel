@@ -8,7 +8,7 @@ import net.codesup.emit.SourceFile
  */
 interface DeclarationScope : DeclarationOwner {
 
-    fun addDeclaration(declaration: Declaration)
+    fun <D:Declaration> addDeclaration(declaration: D):D
 
     fun _property(name: String, block: PropertyDeclaration.() -> Unit): PropertyDeclaration =
         PropertyDeclaration(sourceBuilder, name).apply(block).also { addDeclaration(it) }
@@ -40,9 +40,6 @@ interface DeclarationScope : DeclarationOwner {
     fun _interface(name: String, block: ClassDeclaration.() -> Unit): ClassDeclaration =
         ClassDeclaration(sourceBuilder, name, ClassifierKind.INTERFACE).apply(block).also { addDeclaration(it) }
 
-    fun sourceFile(packageName: PackageDeclaration, name: String, block: SourceFile.() -> Unit) {
-        addDeclaration(SourceFile(sourceBuilder, packageName, name).apply(block))
-    }
 
 
 }

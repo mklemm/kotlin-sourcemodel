@@ -6,7 +6,6 @@ import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
-import net.codesup.emit.SymbolOwner
 import net.codesup.emit.use.SuperclassRef
 
 /**
@@ -29,7 +28,7 @@ class ClassDeclaration(
     override val declarations = mutableListOf<Declaration>()
     override val doc: KDocBuilder = KDocBuilder()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         doc.generate(this, output)
         annotations.forEach {
             it.generate(this, output)
@@ -88,8 +87,6 @@ class ClassDeclaration(
     fun isPublic() = modifier(ClassModifier.PUBLIC)
     fun isSealed() = modifier(ClassModifier.SEALED)
 
-    override fun addDeclaration(declaration: Declaration) {
-        declarations.add(declaration)
-    }
+    override fun <D:Declaration> addDeclaration(declaration: D):D = declaration.also { declarations.add(it) }
 
 }

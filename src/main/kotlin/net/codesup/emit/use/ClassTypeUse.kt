@@ -2,14 +2,7 @@ package net.codesup.emit.use
 
 import net.codesup.emit.*
 import net.codesup.emit.declaration.ClassDeclaration
-import net.codesup.emit.declaration.DeclarationScope
-import net.codesup.emit.declaration.ExternalTypeDeclaration
-import net.codesup.emit.declaration.FunctionTypeDeclaration
-import net.codesup.emit.declaration.KClassDeclaration
-import net.codesup.emit.declaration.TypeParameterDeclaration
-import net.codesup.emit.expressions.DotClass
-import net.codesup.emit.expressions.ExpressionContext
-import kotlin.reflect.KClass
+import net.codesup.emit.declaration.DeclarationOwner
 
 open class ClassTypeUse(sourceBuilder: SourceBuilder, declaration: ClassDeclaration) : TypeUse(sourceBuilder, declaration), Use {
 
@@ -19,7 +12,7 @@ open class ClassTypeUse(sourceBuilder: SourceBuilder, declaration: ClassDeclarat
         c.add(typeArguments)
     }
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         annotations.forEach { anno ->
             output.g(scope, anno).w(" ")
         }

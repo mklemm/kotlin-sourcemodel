@@ -1,13 +1,10 @@
 package net.codesup.emit.declaration
 
 import net.codesup.emit.expressions.Assign
-import net.codesup.emit.expressions.Expression
 import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
-import net.codesup.emit.expressions.Statement
-import net.codesup.emit.sourceBuilder
 import net.codesup.emit.use.*
 
 /**
@@ -25,7 +22,7 @@ class ParameterDeclaration(sourceBuilder: SourceBuilder, name:String): TypedElem
     var init: Assign? = null
     val modifiers = mutableListOf<ParameterModifier>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.q(name).w(": ")
         type.generate(scope, output)
         if(init != null) {

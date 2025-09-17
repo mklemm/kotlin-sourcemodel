@@ -23,7 +23,7 @@ open class FunctionDeclaration(sourceBuilder: SourceBuilder, override val name:S
     var returnType: TypeUse? = null
     val typeParameters = mutableListOf<TypeParameterDeclaration>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.g(scope, doc)
         output.w(modifiers.joinToString(" "))
         output.w("fun ")

@@ -1,18 +1,12 @@
 package net.codesup.emit
 
-import net.codesup.emit.declaration.Declaration
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.emit.declaration.FunctionDeclaration
 import net.codesup.emit.declaration.PropertyDeclaration
-import net.codesup.emit.declaration.TypedElementDeclaration
-import net.codesup.emit.expressions.Assign
-import net.codesup.emit.expressions.Expression
 import net.codesup.emit.expressions.ExpressionContext
 import net.codesup.emit.expressions.ExpressionFactory
-import net.codesup.emit.expressions.PropertyVar
 import net.codesup.emit.expressions.Statement
 import net.codesup.emit.expressions.StatementContext
-import net.codesup.emit.expressions.Variable
 
 /**
  * @author Mirko Klemm 2021-03-18
@@ -48,7 +42,7 @@ open class Block(val sourceBuilder: SourceBuilder) : StatementContext {
 
     fun st(block:ExpressionContext.() -> Unit) = addStatement(ExpressionFactory(sourceBuilder).apply(block))
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.wl(" {")
         output.increaseIndent()
         statements.forEach {

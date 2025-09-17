@@ -5,7 +5,6 @@ import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
-import net.codesup.emit.sourceBuilder
 import net.codesup.emit.use.*
 import kotlin.reflect.KClass
 
@@ -23,7 +22,7 @@ class TypeParameterDeclaration(sourceBuilder: SourceBuilder, name:String): TypeD
     var variance: TypeParamVariance? = null
     val boundaries = mutableListOf<TypeUse>()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         if(isReified) {
             output.w("reified ")
         }
@@ -73,7 +72,7 @@ class TypeParameterDeclaration(sourceBuilder: SourceBuilder, name:String): TypeD
 }
 
 class TypeParamBoundary(val name:String, val typeUse: TypeUse): Generable {
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.q(name).w(": ")
         typeUse.generate(scope, output)
     }
@@ -84,7 +83,7 @@ enum class TypeParamProjection(val value:String): Generable {
     IN("in"),
     OUT("out");
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.w(value)
     }
 }
@@ -93,7 +92,7 @@ enum class TypeParamVariance(val value:String): Generable {
     IN("in"),
     OUT("out");
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.w(value)
     }
 }

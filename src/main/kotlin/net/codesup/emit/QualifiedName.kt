@@ -1,6 +1,6 @@
 package net.codesup.emit
 
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 import kotlin.reflect.KClass
 
 /**
@@ -31,7 +31,7 @@ abstract class QualifiedName(
     fun resolve(other: String): PackageName = PackageName(packageParts + localPart, other)
     fun isInSamePackage(other: QualifiedName) = packageParts == other.packageParts
     fun isInSameClass(other: QualifiedName) = packageParts == other.packageParts && classParts == other.classParts
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.w(quotedStringValue)
     }
     override fun toString() = stringValue

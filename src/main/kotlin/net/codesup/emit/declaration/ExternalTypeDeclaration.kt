@@ -6,7 +6,6 @@ import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
 import net.codesup.emit.className
-import net.codesup.emit.use.AnnotationUse
 
 /**
  * @author Mirko Klemm 2025-09-11
@@ -20,7 +19,7 @@ open class ExternalTypeDeclaration(sourceBuilder: SourceBuilder, override val qu
 
     override val doc: KDocBuilder = KDocBuilder()
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
 
     }
 

@@ -1,11 +1,10 @@
 package net.codesup.emit.expressions
 
-import net.codesup.emit.LocalName
 import net.codesup.emit.OutputContext
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
 import net.codesup.emit.declaration.Declaration
-import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.emit.declaration.NamedDeclaration
 import net.codesup.emit.use.SymbolUser
 import net.codesup.emit.use.TypeUse
@@ -40,7 +39,7 @@ open class Invocation(context: SourceBuilder, val declaration: Declaration) : Si
         return this
     }
 
-    override fun generate(scope: DeclarationScope, output: OutputContext) {
+    override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.w(declaration.qualifiedName).list(scope, typeArgs, prefix = "<", suffix = ">").w("(").list(scope, args).w(")")
     }
 
