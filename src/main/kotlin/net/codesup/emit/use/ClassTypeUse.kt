@@ -19,45 +19,11 @@ open class ClassTypeUse(sourceBuilder: SourceBuilder, declaration: ClassDeclarat
         c.add(typeArguments)
     }
 
-    val typeArguments = mutableListOf<TypeUse>()
-
-    fun arg(typeParamName: String, block: TypeParameterUse.() -> Unit = {}) {
-        typeArguments.add(TypeParameterUse(sourceBuilder, TypeParameterDeclaration(sourceBuilder, typeParamName)).apply(block))
-    }
-
-    fun arg(typeParam: TypeParameterDeclaration, block: TypeParameterUse.() -> Unit = {}) {
-        typeArguments.add(TypeParameterUse(sourceBuilder, typeParam).apply(block))
-    }
-
-    fun arg(type: ClassDeclaration, block: ClassTypeUse.() -> Unit = {}) {
-        typeArguments.add(sourceBuilder.typeUse(type, block))
-    }
-
-    fun arg(type: ExternalTypeDeclaration, block: ExternalTypeUse.() -> Unit = {}) {
-        typeArguments.add(sourceBuilder.typeUse(type, block))
-    }
-
-    fun arg(decl: FunctionTypeDeclaration, block: FunctionTypeUse.() -> Unit) {
-        typeArguments.add(FunctionTypeUse(sourceBuilder, decl).apply(block))
-    }
-
-    fun arg(typeArg: TypeUse) {
-        typeArguments.add(typeArg)
-    }
-
-    fun <T : Any> arg(kClass: KClass<T>, block: KClassUse<T>.() -> Unit) {
-        typeArguments.add(KClassUse<T>(sourceBuilder, KClassDeclaration(sourceBuilder, kClass)).apply(block))
-    }
-
-    fun dotClass() = DotClass(sourceBuilder,this)
-
-    val isParameterized:Boolean get() = typeArguments.isNotEmpty()
-
     override fun generate(scope: DeclarationScope, output: OutputContext) {
         annotations.forEach { anno ->
             output.g(scope, anno).w(" ")
         }
-        output.w(sourceBuilder.qualifiedNameOf(declaration) ?: QualifiedName(declaration.name))
+        output.w(sourceBuilder.qualifiedNameOf(declaration) ?: LocalName(declaration.name))
         if (isNullable) output.w("?")
         output.list(scope, typeArguments, prefix = "<", suffix = ">")
     }

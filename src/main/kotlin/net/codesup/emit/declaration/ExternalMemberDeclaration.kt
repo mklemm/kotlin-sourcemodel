@@ -1,16 +1,9 @@
 package net.codesup.emit.declaration
 
-import net.codesup.emit.ExternalSymbol
-import net.codesup.emit.OutputContext
-import net.codesup.emit.Parameterized
-import net.codesup.emit.QualifiedName
-import net.codesup.emit.SourceBuilder
-import net.codesup.emit.Symbol
-import net.codesup.emit.SymbolOwner
+import net.codesup.emit.*
 import net.codesup.emit.use.TypeUse
 
-open class ExternalFunctionDeclaration(sourceBuilder: SourceBuilder, override val qualifiedName: QualifiedName): CallableDeclaration(sourceBuilder), Parameterized,
-    ExternalSymbol {
+open class ExternalMemberDeclaration(sourceBuilder: SourceBuilder, override val qualifiedName: QualifiedName): CallableDeclaration(sourceBuilder), Parameterized {
     override val name:String = qualifiedName.localPart
     override val parameters: MutableList<ParameterDeclaration> = mutableListOf()
     override val doc: KDocBuilder = KDocBuilder()
@@ -29,4 +22,5 @@ open class ExternalFunctionDeclaration(sourceBuilder: SourceBuilder, override va
     }
 
 }
+
 

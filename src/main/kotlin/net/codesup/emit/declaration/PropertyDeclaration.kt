@@ -101,9 +101,5 @@ class PropertyDeclaration(sourceBuilder: SourceBuilder, name: String) : TypedEle
 
     fun modifier(vararg mod: PropertyModifier) = modifiers.addAll(mod.toList())
     fun isLateInit() = modifier(PropertyModifier.LATEINIT)
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
-
 }
 

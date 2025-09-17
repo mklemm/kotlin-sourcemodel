@@ -75,8 +75,5 @@ class ParameterDeclaration(sourceBuilder: SourceBuilder, name:String): TypedElem
     }
 
     fun modifier(vararg mod: ParameterModifier) = modifiers.addAll(mod.toList())
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
 }
 

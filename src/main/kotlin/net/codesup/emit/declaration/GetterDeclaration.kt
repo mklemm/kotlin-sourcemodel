@@ -13,7 +13,4 @@ class GetterDeclaration(sourceBuilder: SourceBuilder) : CallableDeclaration(sour
         block?.generate(scope, output)
     }
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
 }

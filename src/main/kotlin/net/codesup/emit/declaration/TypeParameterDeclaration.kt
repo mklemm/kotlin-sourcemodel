@@ -70,9 +70,6 @@ class TypeParameterDeclaration(sourceBuilder: SourceBuilder, name:String): TypeD
         boundaries.add(FunctionTypeUse(sourceBuilder, FunctionTypeDeclaration(sourceBuilder).apply(block)))
     }
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
 }
 
 class TypeParamBoundary(val name:String, val typeUse: TypeUse): Generable {

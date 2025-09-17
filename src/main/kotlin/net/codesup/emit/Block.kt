@@ -46,7 +46,6 @@ open class Block(val sourceBuilder: SourceBuilder) : StatementContext {
         }
     }
 
-    operator fun (ExpressionContext.() -> Unit).unaryPlus() = addStatement(ExpressionFactory(sourceBuilder).apply(this))
     fun st(block:ExpressionContext.() -> Unit) = addStatement(ExpressionFactory(sourceBuilder).apply(block))
 
     override fun generate(scope: DeclarationScope, output: OutputContext) {

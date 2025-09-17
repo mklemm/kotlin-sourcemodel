@@ -16,6 +16,9 @@ interface DeclarationScope : DeclarationOwner {
     fun _val(name: String, block: PropertyDeclaration.() -> Unit): PropertyDeclaration =
         PropertyDeclaration(sourceBuilder, name).apply { isMutable = false }.apply(block).also { addDeclaration(it) }
 
+    fun _enumConstant(name: String, block: EnumConstantDeclaration.() -> Unit): EnumConstantDeclaration =
+        EnumConstantDeclaration(sourceBuilder, name).apply(block).also { addDeclaration(it) }
+
     fun _var(name: String, block: PropertyDeclaration.() -> Unit): PropertyDeclaration =
         PropertyDeclaration(sourceBuilder, name).apply { isMutable = true }.apply(block).also { addDeclaration(it) }
 
@@ -24,6 +27,9 @@ interface DeclarationScope : DeclarationOwner {
 
     fun _class(name: String, block: ClassDeclaration.() -> Unit = {}): ClassDeclaration =
         ClassDeclaration(sourceBuilder, name).apply(block).also { addDeclaration(it) }
+
+    fun _enum(name: String, block: ClassDeclaration.() -> Unit = {}): ClassDeclaration =
+        ClassDeclaration(sourceBuilder, name, ClassifierKind.ENUM).apply(block).also { addDeclaration(it) }
 
     fun _classifier(
         name: String,

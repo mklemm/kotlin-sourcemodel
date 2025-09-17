@@ -1,11 +1,8 @@
 package net.codesup.emit.declaration
 
+import net.codesup.emit.*
 import net.codesup.emit.use.AnnotationUse
 import net.codesup.emit.use.ClassTypeUse
-import net.codesup.emit.OutputContext
-import net.codesup.emit.QualifiedName
-import net.codesup.emit.SourceBuilder
-import net.codesup.emit.Symbol
 import net.codesup.emit.use.SuperclassRef
 
 /**
@@ -19,6 +16,7 @@ class ObjectDeclaration(name: String = "", sourceBuilder: SourceBuilder) : Named
     override fun reportUsedSymbols(c: MutableCollection<Symbol>) {
         c.add(annotations, declarations, superTypes)
     }
+
     val modifiers = mutableSetOf<ObjectModifier>()
     val superTypes = mutableListOf<SuperclassRef>()
     override val declarations = mutableListOf<Declaration>()
@@ -28,11 +26,11 @@ class ObjectDeclaration(name: String = "", sourceBuilder: SourceBuilder) : Named
             it.generate(this, output)
             output.wl()
         }
-        output.join(modifiers.map { it.value }," ", "", " ")
+        output.join(modifiers.map { it.value }, " ", "", " ")
             .w("object ")
             .q(name)
             .list(this, superTypes, prefix = ": ", suffix = " ")
-        if(declarations.isNotEmpty()) {
+        if (declarations.isNotEmpty()) {
             output.wl(" {")
             output.increaseIndent()
             declarations.forEach { output.g(this, it).wl() }
@@ -47,10 +45,13 @@ class ObjectDeclaration(name: String = "", sourceBuilder: SourceBuilder) : Named
     }
 
     fun superType(qualifiedName: QualifiedName, block: SuperclassRef.() -> Unit = {}) {
-        superTypes.add(SuperclassRef(
-            sourceBuilder,
-            sourceBuilder.typeUse(qualifiedName))
-        .apply(block))
+        superTypes.add(
+            SuperclassRef(
+                sourceBuilder,
+                sourceBuilder.typeUse(qualifiedName)
+            )
+                .apply(block)
+        )
     }
 
     fun superType(typeUse: ClassTypeUse, block: SuperclassRef.() -> Unit = {}) {
@@ -65,4 +66,6 @@ class ObjectDeclaration(name: String = "", sourceBuilder: SourceBuilder) : Named
     override fun addDeclaration(declaration: Declaration) {
         declarations.add(declaration)
     }
+
+
 }

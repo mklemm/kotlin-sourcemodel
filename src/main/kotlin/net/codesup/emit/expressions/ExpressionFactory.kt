@@ -9,13 +9,13 @@ import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
 import net.codesup.emit.declaration.*
+import net.codesup.emit.functionName
+import net.codesup.emit.localName
 import net.codesup.emit.sourceBuilder
 import net.codesup.emit.use.ExternalTypeUse
 import net.codesup.emit.use.KClassUse
 import net.codesup.emit.use.TypeUse
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.full.instanceParameter
 
 /**
  * @author Mirko Klemm 2025-09-12
@@ -29,16 +29,16 @@ open class ExpressionFactory(val sourceBuilder: SourceBuilder) : ExpressionConte
     }
 
     override fun v(name: String) = setExpression(Variable(sourceBuilder, name))
-    override fun v(property: TypedElementDeclaration) = setExpression(PropertyVar(sourceBuilder, property))
+    override fun v(property: Declaration) = setExpression(PropertyVar(sourceBuilder, property))
     override fun Expression.v(name: String): Deref = createDeref {
         Variable(sourceBuilder, name)
     }
 
-    override fun Expression.v(property: TypedElementDeclaration): Deref = createDeref {
+    override fun Expression.v(property: Declaration): Deref = createDeref {
         PropertyVar(sourceBuilder, property)
     }
 
-    override fun t(name: String) = setExpression(Variable(sourceBuilder, name))
+    override fun t(className: String) = setExpression(Variable(sourceBuilder, className))
     override fun <T : Any> t(kClass: KClass<T>) =
         setExpression(KClassUse<T>(sourceBuilder, sourceBuilder.externalType(kClass)))
     override fun str(str: String) = setExpression(Str(sourceBuilder, str))
@@ -56,16 +56,16 @@ open class ExpressionFactory(val sourceBuilder: SourceBuilder) : ExpressionConte
     override fun call(functionName: String, block: Invocation.() -> Unit) =
         setExpression(Invocation(sourceBuilder, sourceBuilder.externalFunction(functionName)).apply(block))
 
-    override fun Expression.call(functionName: QualifiedName, vararg params: Expression): Deref = createDeref {
-        Invocation(sourceBuilder, sourceBuilder.externalFunction(functionName)).apply {
+    override fun Expression.fn(functionName: QualifiedName, vararg params: Expression): Deref = createDeref {
+        Invocation(sourceBuilder, ExternalFunctionDeclaration(sourceBuilder, functionName)).apply {
             invoke(*params)
         }
     }
 
-    override fun Expression.call(functionName: String, vararg params: Expression): Deref =
-        call(QualifiedName(functionName), *params)
+    override fun Expression.fn(functionName: String, vararg params: Expression): Deref =
+        fn(functionName(functionName), *params)
 
-    override fun call(functionDeclaration: FunctionDeclaration, block: Invocation.() -> Unit) =
+    override fun call(functionDeclaration: CallableDeclaration, block: Invocation.() -> Unit) =
         setExpression(Invocation(sourceBuilder, functionDeclaration).apply(block))
 
     override fun call(typedElementDeclaration: TypedElementDeclaration, block: Invocation.() -> Unit) =

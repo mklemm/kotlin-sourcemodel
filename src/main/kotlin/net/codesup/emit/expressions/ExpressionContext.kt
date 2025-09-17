@@ -15,14 +15,17 @@ import kotlin.reflect.KFunction
 interface ExpressionContext {
 
     fun v(name: String):Variable
-    fun v(property: TypedElementDeclaration):PropertyVar
+    fun v(property: Declaration):PropertyVar
     fun Expression.v(name: String):Deref
-    fun Expression.v(property: TypedElementDeclaration):Deref
-    fun t(name: String):Variable
+    fun Expression.v(property: Declaration):Deref
+    fun t(className: String):Variable
     fun <T:Any> t(kClass: KClass<T>):KClassUse<T>
 
-    fun Expression.call(functionRef: KFunction<*>, vararg params: Expression):Deref = call(functionRef.name, *params)
-    fun Expression.call(namedDeclaration: NamedDeclaration, vararg params: Expression):Deref = call(namedDeclaration.name, *params)
+    fun Expression.call(functionRef: KFunction<*>, vararg params: Expression):Deref = fn(functionRef.name, *params)
+    fun Expression.call(namedDeclaration: Declaration, vararg params: Expression):Deref = fn(namedDeclaration.name, *params)
+
+    fun Declaration.call(functionRef: KFunction<*>, vararg params: Expression):Deref = v(this).fn(functionRef.name, *params)
+    fun Declaration.call(namedDeclaration: Declaration, vararg params: Expression):Deref = v(this).fn(namedDeclaration.name, *params)
 
     fun str(str: String):Str
     fun lit(any: Any):Lit
@@ -31,9 +34,11 @@ interface ExpressionContext {
     fun <T:Any> call(typeDeclaration: KClassDeclaration<T>, block: ConstructorInv.() -> Unit = {}): ConstructorInv
     fun call(functionName: QualifiedName, block: Invocation.() -> Unit = {}): Invocation
     fun call(functionName: String, block: Invocation.() -> Unit = {}): Invocation
-    fun Expression.call(functionName: QualifiedName, vararg params: Expression): Deref
-    fun Expression.call(functionName: String, vararg params: Expression): Deref
-    fun call(functionDeclaration: FunctionDeclaration, block: Invocation.() -> Unit = {}): Invocation
+    fun Expression.fn(functionName: QualifiedName, vararg params: Expression): Deref
+    fun Expression.fn(functionName: String, vararg params: Expression): Deref
+    fun Declaration.fn(functionName: QualifiedName, vararg params: Expression): Deref = v(this).fn(functionName, *params)
+    fun Declaration.fn(functionName: String, vararg params: Expression): Deref= v(this).fn(functionName, *params)
+    fun call(functionDeclaration: CallableDeclaration, block: Invocation.() -> Unit = {}): Invocation
     fun call(typedElementDeclaration: TypedElementDeclaration, block: Invocation.() -> Unit = {}): Invocation
     fun <T:Any> call(kClass: KClass<T>, block: Invocation.() -> Unit = {}): Invocation
     fun _null(): Lit

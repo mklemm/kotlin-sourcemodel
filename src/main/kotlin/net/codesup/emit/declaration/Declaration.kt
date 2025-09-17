@@ -2,6 +2,7 @@ package net.codesup.emit.declaration
 
 import net.codesup.emit.Annotatable
 import net.codesup.emit.Generable
+import net.codesup.emit.LocalName
 import net.codesup.emit.expressions.Expression
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
@@ -21,7 +22,7 @@ interface Declaration : Annotatable, Symbol, Statement {
     fun reportDeclaredSymbols(c: MutableCollection<Symbol>) {
         c.add(this)
     }
-
+    val qualifiedName: QualifiedName get() = sourceBuilder.qualifiedNameOf(this) ?: LocalName(name)
     fun doc(s: String): KDocBuilder = doc.apply { lines.add(s) }
     fun doc(block: KDocBuilder.() -> Unit) = doc.apply(block)
 }

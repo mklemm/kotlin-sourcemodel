@@ -28,9 +28,4 @@ class ConstructorDeclaration(sourceBuilder: SourceBuilder) : CallableDeclaration
         parameters.reportUsedSymbols(c)
     }
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
-
-
 }

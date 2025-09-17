@@ -11,8 +11,4 @@ class SetterDeclaration(sourceBuilder: SourceBuilder, val parameterName:String =
         output.w("set(").q(parameterName).w(")")
         block?.generate(scope, output)
     }
-
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
 }

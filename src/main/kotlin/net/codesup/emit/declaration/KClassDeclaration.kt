@@ -1,7 +1,7 @@
 package net.codesup.emit.declaration
 
-import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
+import net.codesup.emit.className
 import kotlin.reflect.KClass
 
 /**
@@ -10,7 +10,5 @@ import kotlin.reflect.KClass
  */
 class KClassDeclaration<T : Any>(sourceBuilder: SourceBuilder, val kClass: KClass<T>) : ExternalTypeDeclaration(
     sourceBuilder,
-    QualifiedName(kClass.qualifiedName!!)
-) {
-
-}
+    className(kClass.qualifiedName!!)
+)

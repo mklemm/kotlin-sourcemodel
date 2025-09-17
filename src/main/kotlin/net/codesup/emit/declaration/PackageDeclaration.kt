@@ -10,7 +10,7 @@ import java.nio.file.Paths
  * @author Mirko Klemm 2021-03-19
  *
  */
-class PackageDeclaration(sourceBuilder: SourceBuilder, val qualifiedName: QualifiedName): NamedDeclaration(
+class PackageDeclaration(sourceBuilder: SourceBuilder, override val qualifiedName: QualifiedName): NamedDeclaration(
     sourceBuilder,
     qualifiedName.localPart
 ), Generable, DeclarationScope {
@@ -24,7 +24,7 @@ class PackageDeclaration(sourceBuilder: SourceBuilder, val qualifiedName: Qualif
         declarations.forEach { it.generate(scope, output) }
     }
 
-    val isRoot = qualifiedName.isEmpty()
+    val isRoot = qualifiedName.isEmpty
 
     fun toPath(): Path = Paths.get(toString().replace('.','/'))
 
@@ -38,4 +38,5 @@ class PackageDeclaration(sourceBuilder: SourceBuilder, val qualifiedName: Qualif
     override fun addDeclaration(declaration: Declaration) {
         declarations.add(declaration)
     }
+
 }

@@ -6,6 +6,7 @@ import net.codesup.emit.OutputContext
 import net.codesup.emit.QualifiedName
 import net.codesup.emit.SourceBuilder
 import net.codesup.emit.Symbol
+import net.codesup.emit.SymbolOwner
 import net.codesup.emit.use.SuperclassRef
 
 /**
@@ -90,4 +91,5 @@ class ClassDeclaration(
     override fun addDeclaration(declaration: Declaration) {
         declarations.add(declaration)
     }
+
 }

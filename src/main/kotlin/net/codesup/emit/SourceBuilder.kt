@@ -1,49 +1,54 @@
 package net.codesup.emit
 
-import net.codesup.emit.declaration.ClassDeclaration
-import net.codesup.emit.declaration.DeclarationScope
-import net.codesup.emit.declaration.ExternalFunctionDeclaration
-import net.codesup.emit.declaration.ExternalTypeDeclaration
-import net.codesup.emit.declaration.KClassDeclaration
-import net.codesup.emit.declaration.PackageDeclaration
-import net.codesup.emit.declaration.TypedElementDeclaration
-import net.codesup.emit.expressions.PropertyVar
-import net.codesup.emit.expressions.Variable
+import net.codesup.emit.declaration.*
 import net.codesup.emit.use.ClassTypeUse
 import net.codesup.emit.use.ExternalTypeUse
 import net.codesup.emit.use.KClassUse
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.jvm.javaMethod
 
 /**
  * @author Mirko Klemm 2021-03-18
  *
  */
-class SourceBuilder: Generable, SymbolOwner {
+class SourceBuilder : Generable, SymbolOwner {
     val packages = mutableMapOf<QualifiedName, PackageDeclaration>()
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? = packages.firstNotNullOfOrNull { it.value.pathTo(symbol) }
+    override fun pathTo(symbol: Symbol): Sequence<Symbol>? = packages.values.firstNotNullOfOrNull {
+        it.pathTo(symbol)
+    }
 
     private val externalTypeDeclarations = mutableMapOf<QualifiedName, ExternalTypeDeclaration>()
     private val externalFunctionDeclarations = mutableMapOf<QualifiedName, ExternalFunctionDeclaration>()
     private val kClassDeclarations = mutableMapOf<KClass<*>, KClassDeclaration<*>>()
 
-    fun externalType(qualifiedName: QualifiedName): ExternalTypeDeclaration = externalTypeDeclarations.computeIfAbsent(qualifiedName) {
-        ExternalTypeDeclaration(this, qualifiedName)
-    }
+    fun externalType(qualifiedName: QualifiedName): ExternalTypeDeclaration =
+        externalTypeDeclarations.computeIfAbsent(qualifiedName) {
+            ExternalTypeDeclaration(this, qualifiedName)
+        }
 
-    fun externalType(qualifiedName: String): ExternalTypeDeclaration = externalType(QualifiedName(qualifiedName))
+    fun externalType(qualifiedName: String): ExternalTypeDeclaration = externalType(className(qualifiedName))
 
-    fun externalFunction(qualifiedName: QualifiedName): ExternalFunctionDeclaration = externalFunctionDeclarations.computeIfAbsent(qualifiedName) {
-        ExternalFunctionDeclaration(this, qualifiedName)
-    }
+    fun externalFunction(qualifiedName: QualifiedName): ExternalFunctionDeclaration =
+        externalFunctionDeclarations.computeIfAbsent(qualifiedName) {
+            ExternalFunctionDeclaration(this, qualifiedName)
+        }
 
-    fun externalFunction(qualifiedName: String): ExternalFunctionDeclaration = externalFunction(QualifiedName(qualifiedName))
+    fun <R> externalFunction(function: KFunction<R>): ExternalFunctionDeclaration =
+        externalFunctionDeclarations.computeIfAbsent(function.qualifiedName) {
+            ExternalFunctionDeclaration(this, function.qualifiedName)
+        }
 
-    fun <T:Any> externalType(kClass: KClass<T>): KClassDeclaration<T> = kClassDeclarations.computeIfAbsent(kClass) {
+    fun externalFunction(qualifiedName: String): ExternalFunctionDeclaration =
+        externalFunction(functionName(qualifiedName))
+
+    fun <T : Any> externalType(kClass: KClass<T>): KClassDeclaration<T> = kClassDeclarations.computeIfAbsent(kClass) {
         KClassDeclaration(this, kClass)
     } as KClassDeclaration<T>
 
-    fun <T:Any> typeUse(cls: KClass<T>, block: KClassUse<T>.() -> Unit = {}) = KClassUse(
+    fun <T : Any> typeUse(cls: KClass<T>, block: KClassUse<T>.() -> Unit = {}) = KClassUse(
         this, externalType(cls)
     ).apply(block)
 
@@ -63,13 +68,20 @@ class SourceBuilder: Generable, SymbolOwner {
         this, declaration
     ).apply(block)
 
-    fun <T:Any>typeUse(typeDeclaration: KClassDeclaration<T>, block: ExternalTypeUse.() -> Unit = {}) = KClassUse<T>(this, typeDeclaration).apply(block)
+    fun <T : Any> typeUse(typeDeclaration: KClassDeclaration<T>, block: ExternalTypeUse.() -> Unit = {}) =
+        KClassUse<T>(this, typeDeclaration).apply(block)
 
-    fun _package(name: QualifiedName, block: PackageDeclaration.() -> Unit) = PackageDeclaration(this, name).apply(block).also { packages[name] = it }
-    fun _package(name:String, block: PackageDeclaration.() -> Unit) = QualifiedName(name).let { pn -> PackageDeclaration(
-        this,
-        pn
-    ).apply(block).also { packages[pn] = it } }
+    fun _package(name: QualifiedName, block: PackageDeclaration.() -> Unit) =
+        PackageDeclaration(this, name).apply(block).also { packages[name] = it }
+
+    fun _package(name: String, block: PackageDeclaration.() -> Unit) = packageName(name).let { pn ->
+        PackageDeclaration(
+            this,
+            pn
+        ).apply(block).also { packages[pn] = it }
+    }
+
+    val rootPackage = PackageDeclaration(this, emptyName())
 
     val unitType = KClassDeclaration(this, Unit::class)
     val anyType = KClassDeclaration(this, Any::class)
@@ -84,9 +96,17 @@ class SourceBuilder: Generable, SymbolOwner {
 
     fun generate(output: OutputContext) = generate(packages.values.first(), output)
 
-    val KClass<*>.nameWithParentClass:String get() = enclosingClass?.let { "${it.nameWithParentClass}.$simpleName" } ?: simpleName!!
-    val <T:Any> KClass<T>.enclosingClass:KClass<*>? get() = java.enclosingClass?.kotlin
-    val <T:Any> KClass<T>.packageName:String get() = java.packageName
+    val KClass<*>.nameWithParentClass: String
+        get() = enclosingClass?.let { "${it.nameWithParentClass}.$simpleName" } ?: simpleName!!
+    val <T : Any> KClass<T>.enclosingClass: KClass<*>? get() = java.enclosingClass?.kotlin
+    val <T : Any> KClass<T>.packageName: String get() = java.packageName
 }
 
-fun sourceBuilder(block: SourceBuilder.()->Unit): SourceBuilder = SourceBuilder().apply(block)
+fun sourceBuilder(block: SourceBuilder.() -> Unit): SourceBuilder = SourceBuilder().apply(block)
+
+val <R> KFunction<R>.qualifiedName: QualifiedName
+    get() = functionName(
+        javaMethod?.declaringClass?.packageName,
+        if (instanceParameter == null) null else javaMethod?.declaringClass?.name?.substringAfterLast('.'),
+        name
+    )

@@ -17,7 +17,14 @@ repositories {
 
 kotlin {
     jvmToolchain(24)
+    sourceSets {
+        val test by getting {
+            kotlin.srcDirs("src/test/kotlin", "${layout.buildDirectory}/generated-sources/test")
+        }
+    }
 }
+
+
 
 dependencies {
     implementation(kotlin("stdlib"))

@@ -1,7 +1,6 @@
 package net.codesup.emit.expressions
 
 import net.codesup.emit.Generable
-import net.codesup.emit.SourceBuilder
 import net.codesup.emit.use.SymbolUser
 
 /**

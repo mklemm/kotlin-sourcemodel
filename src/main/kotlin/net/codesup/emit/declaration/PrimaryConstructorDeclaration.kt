@@ -8,7 +8,7 @@ class PrimaryConstructorDeclaration(sourceBuilder: SourceBuilder) : CallableDecl
     val parameters = mutableListOf<TypedElementDeclaration>()
     override val doc: KDocBuilder = KDocBuilder()
     override fun generate(scope: DeclarationScope, output: OutputContext) {
-        if(modifiers.isNotEmpty()) {
+        if (modifiers.isNotEmpty()) {
             modifiers.forEach {
                 output.w(it).w(" ")
             }
@@ -25,21 +25,35 @@ class PrimaryConstructorDeclaration(sourceBuilder: SourceBuilder) : CallableDecl
     }
 
     override fun reportUsedSymbols(c: MutableCollection<Symbol>) {
-            super.reportUsedSymbols(c)
-            parameters.reportUsedSymbols(c)
-        }
+        super.reportUsedSymbols(c)
+        parameters.reportUsedSymbols(c)
+    }
 
-    fun param(name:String, block: ParameterDeclaration.() -> Unit) = ParameterDeclaration(
+    fun param(name: String, block: ParameterDeclaration.() -> Unit) = ParameterDeclaration(
         sourceBuilder,
         name
-    ).apply(block).also{parameters.add(it)}
+    ).apply(block).also { parameters.add(it) }
 
-    fun property(name:String, block: PropertyDeclaration.() -> Unit) = PropertyDeclaration(
+    fun property(name: String, block: PropertyDeclaration.() -> Unit) = PropertyDeclaration(
         sourceBuilder,
         name
-    ).apply(block).also{parameters.add(it)}
+    ).apply(block).also { parameters.add(it) }
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
+    fun _val(name: String, block: PropertyDeclaration.() -> Unit) = PropertyDeclaration(
+        sourceBuilder,
+        name
+    ).apply {
+        isMutable = false
+        block()
+        parameters.add(this)
+    }
+
+    fun _var(name: String, block: PropertyDeclaration.() -> Unit) = PropertyDeclaration(
+        sourceBuilder,
+        name
+    ).apply {
+        isMutable = true
+        block()
+        parameters.add(this)
     }
 }

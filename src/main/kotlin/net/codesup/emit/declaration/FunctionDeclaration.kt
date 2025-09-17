@@ -71,8 +71,5 @@ open class FunctionDeclaration(sourceBuilder: SourceBuilder, override val name:S
         typeParameters.add(TypeParameterDeclaration(sourceBuilder, name).apply(block))
     }
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
 }
 

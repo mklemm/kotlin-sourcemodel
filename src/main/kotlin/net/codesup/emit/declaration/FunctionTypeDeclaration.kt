@@ -140,8 +140,4 @@ class FunctionTypeDeclaration(sourceBuilder: SourceBuilder) : TypeDeclaration(so
 
     override val doc: KDocBuilder = KDocBuilder()
 
-    override fun pathTo(symbol: Symbol): Sequence<Symbol>? {
-        return null
-    }
-
 }
