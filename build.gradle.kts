@@ -3,9 +3,10 @@ buildscript {
         gradlePluginPortal()
     }
 }
+val kotlinVersion: String by properties
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm")
 }
 
 group = "net.codesup.util"
@@ -18,8 +19,6 @@ repositories {
 kotlin {
     jvmToolchain(24)
 }
-
-
 
 dependencies {
     implementation(kotlin("stdlib"))
