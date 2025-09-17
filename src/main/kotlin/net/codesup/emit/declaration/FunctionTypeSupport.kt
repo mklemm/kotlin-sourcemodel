@@ -19,7 +19,7 @@ interface FunctionTypeSupport {
     fun receiver(qualifiedName: QualifiedName, block: ExternalTypeUse.() -> Unit = {})
     fun receiver(type: ClassDeclaration, block: ClassTypeUse.() -> Unit = {})
     fun receiver(type: ExternalTypeDeclaration, block: ExternalTypeUse.() -> Unit = {})
-    fun receiver(decl: TypeParameterDeclaration, block: TypeParameterUse.() -> Unit)
+    fun receiver(decl: TypeParameterDeclaration, block: TypeParameterUse.() -> Unit = {})
     fun <T : Any> receiver(type: KClass<T>, block: KClassUse<T>.() -> Unit = {})
     fun receiver(functionTypeDeclaration: FunctionTypeDeclaration, block: FunctionTypeUse.() -> Unit)
     fun receiver(block: InlineFunctionType.() -> Unit)

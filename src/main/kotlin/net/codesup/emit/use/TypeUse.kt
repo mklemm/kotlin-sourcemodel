@@ -50,7 +50,7 @@ abstract class TypeUse(sourceBuilder: SourceBuilder, val declaration: TypeDeclar
         typeArguments.add(typeArg)
     }
 
-    fun <T : Any> arg(kClass: KClass<T>, block: KClassUse<T>.() -> Unit) {
+    fun <T : Any> arg(kClass: KClass<T>, block: KClassUse<T>.() -> Unit = {}) {
         typeArguments.add(KClassUse<T>(sourceBuilder, KClassDeclaration(sourceBuilder, kClass)).apply(block))
     }
 
