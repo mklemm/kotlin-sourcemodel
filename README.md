@@ -40,6 +40,7 @@ The packages are published on maven central. The coordinates are:
 groupId: net.codesup.util
 artifactId: kotlin-sourcemodel
 current version: 0.2.0-alpha
+You can use this as a library in a kapt, ksp or other code generation build step.
 
 ## Examples
 The following code sample builds a package with a file declaring a class with a property (declared as primary constructor parameter)
