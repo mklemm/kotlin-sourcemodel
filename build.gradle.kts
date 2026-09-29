@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "net.codesup.util"
-version = "0.3.0-alpha"
+version = "0.5.0-alpha"
 
 repositories {
     mavenCentral()

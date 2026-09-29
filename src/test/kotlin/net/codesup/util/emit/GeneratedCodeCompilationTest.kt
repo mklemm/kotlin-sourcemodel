@@ -53,6 +53,50 @@ class GeneratedCodeCompilationTest {
     }
 
     @Test
+    fun samePackageReferencesAcrossFilesUseShortNamesWithoutImports() {
+        val result = CompilationHarness.compile(sourceBuilder {
+            _package("generated.shared") {
+                lateinit var item: ClassDeclaration
+                _file("Item") { item = _class("Item") }
+                _file("Other") { _class("Other") }
+                _file("Consumer") {
+                    _class("Consumer") {
+                        primaryConstructor {
+                            _val("direct") { type(item) }
+                            _val("external") { type(externalType("generated.shared.Other")) }
+                        }
+                    }
+                }
+            }
+        })
+        result.assertCompiles()
+        val source = result.sources.getValue("generated/shared/Consumer.kt")
+        assertTrue(source.contains("direct: Item"), source)
+        assertTrue(source.contains("external: Other"), source)
+        assertTrue(source.lineSequence().none { it.startsWith("import ") }, source)
+    }
+
+    @Test
+    fun parentPackageStillRequiresAnImport() {
+        val result = CompilationHarness.compile(sourceBuilder {
+            _package("generated") { _file("Parent") { _class("Parent") } }
+            _package("generated.child") {
+                _file("Consumer") {
+                    _class("Consumer") {
+                        primaryConstructor {
+                            _val("parent") { type(externalType("generated.Parent")) }
+                        }
+                    }
+                }
+            }
+        })
+        result.assertCompiles()
+        val source = result.sources.getValue("generated/child/Consumer.kt")
+        assertTrue(source.contains("import generated.Parent"), source)
+        assertTrue(source.contains("parent: Parent"), source)
+    }
+
+    @Test
     fun conflictingImportedTypeNames() {
         val result = CompilationHarness.compile(sourceBuilder {
             _package("generated.clashes") {
@@ -117,6 +161,61 @@ class GeneratedCodeCompilationTest {
                 }
             }
         }).assertCompiles()
+    }
+
+    @Test
+    fun defaultJvmImportsUseShortNamesWithoutImportDirectives() {
+        val result = CompilationHarness.compile(sourceBuilder {
+            _package("generated.defaults") {
+                _file("Defaults") {
+                    _class("Defaults") {
+                        primaryConstructor {
+                            _val("text") { type(String::class) }
+                            _val("items") { type(List::class) { arg(String::class) } }
+                            _val("thread") { type(Thread::class) }
+                            _val("annotation") { type(kotlin.jvm.JvmName::class) }
+                            _val("date") { type(LocalDateTime::class) }
+                            _val("type") { type(kotlin.reflect.KClass::class) { arg(String::class) } }
+                        }
+                    }
+                    _fun("printMessage") {
+                        block {
+                            st {
+                                val message = str("hello")
+                                call(externalFunction("kotlin.io.println")) { arg(message) }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        result.assertCompiles()
+        val source = result.sources.values.single()
+        assertEquals(listOf("import kotlin.reflect.KClass", "import java.time.LocalDateTime"),
+            source.lineSequence().filter { it.startsWith("import ") }.toList(), source)
+        for (reference in listOf("text: String", "items: List<String>", "thread: Thread",
+            "annotation: JvmName", "println(\"hello\")")) {
+            assertTrue(source.contains(reference), source)
+        }
+    }
+
+    @Test
+    fun defaultImportedTypeRemainsQualifiedWhenItsNameClashes() {
+        val result = CompilationHarness.compile(sourceBuilder {
+            _package("generated.defaults") {
+                _file("String") {
+                    _class("String") {
+                        primaryConstructor {
+                            _val("text") { type(String::class) }
+                        }
+                    }
+                }
+            }
+        })
+        result.assertCompiles()
+        val source = result.sources.values.single()
+        assertTrue(source.contains("text: kotlin.String"), source)
+        assertTrue(source.lineSequence().none { it.startsWith("import ") }, source)
     }
 
     @Test

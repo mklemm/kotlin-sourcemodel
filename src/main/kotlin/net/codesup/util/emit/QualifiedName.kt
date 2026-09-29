@@ -29,7 +29,11 @@ abstract class QualifiedName(
     abstract fun resolve(other: ClassName): ClassName?
     abstract fun resolve(other: FunctionName): FunctionName?
     fun resolve(other: String): PackageName = PackageName(packageParts + localPart, other)
-    fun isInSamePackage(other: QualifiedName) = packageParts == other.packageParts
+    fun isInSamePackage(other: QualifiedName): Boolean {
+        val thisPackage = if (this is PackageName) parts else packageParts
+        val otherPackage = if (other is PackageName) other.parts else other.packageParts
+        return thisPackage == otherPackage
+    }
     fun isInSameClass(other: QualifiedName) = packageParts == other.packageParts && classParts == other.classParts
     override fun generate(scope: DeclarationOwner, output: OutputContext) {
         output.w(quotedStringValue)

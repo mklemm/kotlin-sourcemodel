@@ -41,25 +41,25 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
 
         val usedSymbols = mutableSetOf<Symbol>().also { reportUsedSymbols(it) }
         val declaredSymbols = mutableSetOf<Symbol>().also { reportDeclaredSymbols(it) }
-        val myPath = sourceBuilder.pathTo(this)?.toList()
-        val myPackage = if(myPath == null || myPath.size <= 1) sourceBuilder.rootPackage else myPath.dropLast(1).last() as PackageDeclaration
+        val myPackage = packageName
 
         val importedSymbols = usedSymbols
-            .filter { u -> myPackage.pathTo(u) == null }
             .filter { u -> sourceBuilder.qualifiedNameOf(u)?.packageParts?.isNotEmpty() == true }
 
         importedSymbols.mapNotNull{sourceBuilder.qualifiedNameOf(it)}.associateByTo(output.importedSymbolReverseMap, { it }, { LocalName(it.localPart) } )
         declaredSymbols.mapNotNull{sourceBuilder.qualifiedNameOf(it)}.associateByTo(output.importedSymbolReverseMap, { it }, { LocalName(it.localPart) } )
 
         // Resolve clashes
-        val clashes = (usedSymbols + declaredSymbols).mapNotNull{ sourceBuilder.qualifiedNameOf(it) }.groupBy { it.localPart }.filter { it.value.size > 1 }
+        val clashes = (usedSymbols + declaredSymbols).mapNotNull{ sourceBuilder.qualifiedNameOf(it) }.distinct().groupBy { it.localPart }.filter { it.value.size > 1 }
         val clashSet = clashes.values.flatten().toSet()
         clashSet.forEach { output.importedSymbolReverseMap.remove(it) }
 
         val imports = importedSymbols
             .mapNotNull { sourceBuilder.qualifiedNameOf(it) }
             .filter { !clashSet.contains(it) }
-            .filter { !it.isInSamePackage(myPackage.qualifiedName) }
+            .filter { !(it.classParts.isEmpty() && it.isInSamePackage(myPackage.qualifiedName)) }
+            // Keep short-name mappings above, but omit imports supplied by Kotlin/JVM.
+            .filter { it.quotedQualifier !in defaultPackageNames }
             .groupBy { it.quotedQualifier }
             .flatMap { (q, vals) -> if (vals.size < wildcardImportLimit) vals.map { it.quotedStringValue } else listOf("$q.*") }
 
@@ -76,6 +76,7 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
     }
 
 
+    // Default imports for generated Kotlin/JVM source files.
     private val defaultPackageNames = setOf(
         "kotlin",
         "kotlin.annotation",
@@ -86,8 +87,7 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
         "kotlin.sequences",
         "kotlin.text",
         "java.lang",
-        "kotlin.jvm",
-        "kotlin.js"
+        "kotlin.jvm"
     )
 
     override val annotations = mutableListOf<AnnotationUse>()
