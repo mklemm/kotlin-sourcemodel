@@ -10,7 +10,7 @@ buildscript {
 val kotlinVersion: String by properties
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "2.4.20"
     `java-library`
     `maven-publish`
     id("org.jreleaser") version "1.20.0"
@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "net.codesup.util"
-version = "0.2.0-alpha"
+version = "0.3.0-alpha"
 
 repositories {
     mavenCentral()

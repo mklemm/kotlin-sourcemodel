@@ -1,5 +1,6 @@
 package net.codesup.util.emit
 
+import net.codesup.emit.FilesystemOutputContext
 import net.codesup.emit.OutputContext
 import net.codesup.emit.declaration.ClassDeclaration
 import net.codesup.emit.functionName
@@ -66,7 +67,7 @@ class SourceBuilderTest {
                     }
                 }
             }
-        }.generate(OutputContext(Paths.get("build/generated-sources/test")))
+        }.generate(FilesystemOutputContext(Paths.get("build/generated-sources/test")))
 
     }
 
@@ -117,7 +118,7 @@ class SourceBuilderTest {
                         }
                     }
             }
-        }.generate(OutputContext(Paths.get("build/generated-sources/test")))
+        }.generate(FilesystemOutputContext(Paths.get("build/generated-sources/test")))
 
     }
 
@@ -164,7 +165,7 @@ class SourceBuilderTest {
             }
         }
         assertEquals("net.codesup.util.TestClass", testClass!!.qualifiedName.toString())
-        sb.generate(OutputContext(Paths.get("build/generated-sources/test")))
+        sb.generate(FilesystemOutputContext(Paths.get("build/generated-sources/test")))
     }
 
     @Test
@@ -199,7 +200,7 @@ class SourceBuilderTest {
                     }
                 }
             }
-        }.generate(OutputContext(Paths.get("src/test/kotlin")))
+        }.generate(FilesystemOutputContext(Paths.get("src/test/kotlin")))
     }
 
     @Test
@@ -241,7 +242,7 @@ class SourceBuilderTest {
                     }
                 }
             }
-        }.generate(OutputContext(Paths.get("src/test/kotlin")))
+        }.generate(FilesystemOutputContext(Paths.get("src/test/kotlin")))
     }
 
     @Test

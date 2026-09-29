@@ -22,7 +22,7 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
     override val declarations = mutableListOf<Declaration>()
 
     override fun generate(scope: DeclarationOwner, output: OutputContext) {
-        output.file(packageName.toPath().resolve("${name}.kt")) {
+        output.file(packageName, name) {
             if (!packageName.isRoot) {
                 output.w("package ")
                 packageName.qualifiedName.generate(scope, output)
@@ -45,7 +45,7 @@ class SourceFile(sourceBuilder: SourceBuilder, val packageName: PackageDeclarati
         val myPackage = if(myPath == null || myPath.size <= 1) sourceBuilder.rootPackage else myPath.dropLast(1).last() as PackageDeclaration
 
         val importedSymbols = usedSymbols
-            .filter { u -> myPackage?.pathTo(u) == null }
+            .filter { u -> myPackage.pathTo(u) == null }
             .filter { u -> sourceBuilder.qualifiedNameOf(u)?.packageParts?.isNotEmpty() == true }
 
         importedSymbols.mapNotNull{sourceBuilder.qualifiedNameOf(it)}.associateByTo(output.importedSymbolReverseMap, { it }, { LocalName(it.localPart) } )

@@ -2,9 +2,11 @@ package net.codesup.emit
 
 import net.codesup.emit.declaration.DeclarationOwner
 import net.codesup.emit.declaration.DeclarationScope
+import net.codesup.emit.declaration.PackageDeclaration
 import java.io.BufferedWriter
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 
 val reservedWords = listOf("class", "interface", "package", "var", "val", "fun", "return", "this")
 
@@ -12,21 +14,17 @@ val reservedWords = listOf("class", "interface", "package", "var", "val", "fun",
  * @author Mirko Klemm 2021-03-18
  *
  */
-class OutputContext(val target: Path) {
+abstract class OutputContext() {
     var currentWriter: BufferedWriter? = null
     private var indent: Int = 0
     private val indentChars = "\t"
 
     val importedSymbolReverseMap = mutableMapOf<QualifiedName, QualifiedName>()
 
-    fun file(relativePath: Path?, block: OutputContext.() -> Unit) {
-        val targetPath = relativePath?.let { target.resolve(it) } ?: target
-        Files.createDirectories(targetPath.parent)
-        currentWriter = Files.newBufferedWriter(targetPath)
-        importedSymbolReverseMap.clear()
-        block()
-        currentWriter?.close()
-        currentWriter = null
+    abstract fun file(packageName: String, baseName: String, block: OutputContext.() -> Unit)
+
+    fun file(packageDeclaration: PackageDeclaration, baseName: String, block: OutputContext.() -> Unit) {
+        file(packageDeclaration.toString(), baseName, block)
     }
 
     fun w(qualifiedName: QualifiedName): OutputContext {
@@ -91,6 +89,19 @@ class OutputContext(val target: Path) {
             w(suffix)
         }
         return this
+    }
+}
+
+class FilesystemOutputContext(val target: Path): OutputContext() {
+    override fun file(packageName: String, baseName: String, block: OutputContext.() -> Unit) {
+        val relativePath = Paths.get(packageName.replace('.','/')).resolve("${baseName}.kt")
+        val targetPath = relativePath?.let { target.resolve(it) } ?: target
+        Files.createDirectories(targetPath.parent)
+        currentWriter = Files.newBufferedWriter(targetPath)
+        importedSymbolReverseMap.clear()
+        block()
+        currentWriter?.close()
+        currentWriter = null
     }
 }
 
