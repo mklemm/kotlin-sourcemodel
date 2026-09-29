@@ -25,7 +25,7 @@ repositories {
 }
 
 kotlin {
-    jvmToolchain(24)
+    jvmToolchain(21)
 }
 
 java {
@@ -122,5 +122,6 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
     testImplementation(kotlin("test"))
+    testImplementation(kotlin("compiler-embeddable"))
 }
 

@@ -1,11 +1,11 @@
 package net.codesup.util.emit
 
-import net.codesup.emit.FilesystemOutputContext
-import net.codesup.emit.OutputContext
-import net.codesup.emit.declaration.ClassDeclaration
-import net.codesup.emit.functionName
-import net.codesup.emit.qualifiedName
-import net.codesup.emit.sourceBuilder
+import net.codesup.util.emit.FilesystemOutputContext
+import net.codesup.util.emit.OutputContext
+import net.codesup.util.emit.declaration.ClassDeclaration
+import net.codesup.util.emit.functionName
+import net.codesup.util.emit.qualifiedName
+import net.codesup.util.emit.sourceBuilder
 import net.codesup.util.stream.testFunction6
 import java.nio.file.Paths
 import java.time.LocalDateTime
@@ -200,7 +200,7 @@ class SourceBuilderTest {
                     }
                 }
             }
-        }.generate(FilesystemOutputContext(Paths.get("src/test/kotlin")))
+        }.generate(FilesystemOutputContext(Paths.get("build/generated-sources/legacy-tests")))
     }
 
     @Test
@@ -242,7 +242,7 @@ class SourceBuilderTest {
                     }
                 }
             }
-        }.generate(FilesystemOutputContext(Paths.get("src/test/kotlin")))
+        }.generate(FilesystemOutputContext(Paths.get("build/generated-sources/legacy-tests")))
     }
 
     @Test

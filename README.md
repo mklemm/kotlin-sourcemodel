@@ -113,3 +113,25 @@ class TestClass<T: Any?.() -> AnotherClass<T>>(val firstParam: AnotherClass) {
 
 }
 ```
+
+## Testing generated code
+
+Run `./gradlew test` to execute all tests, or run only the compilation cases with:
+
+```shell
+./gradlew test --tests 'net.codesup.util.emit.GeneratedCodeCompilationTest'
+```
+
+`GeneratedCodeCompilationTest` builds models with the DSL and passes them to
+`CompilationHarness.compile(model).assertCompiles()`. The harness generates all
+files into a fresh temporary directory, compiles them together with the Kotlin
+JVM compiler matching the Gradle Kotlin plugin, checks that class files were
+produced, and cleans up afterward. No separate `kotlinc` installation is needed.
+Generated code can reference the JDK and Kotlin standard library; test fixtures
+are deliberately excluded from its compilation classpath.
+
+To add a case, create a `sourceBuilder { ... }` model in a new `@Test` and pass it
+to the harness. Compilation failures include compiler diagnostics and numbered
+generated sources. A negative control verifies that invalid generated code is
+rejected. The older example tests only exercise generation and include
+intentionally incomplete code; their output stays under `build/generated-sources`.
